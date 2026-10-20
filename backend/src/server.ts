@@ -1,7 +1,9 @@
 import { app } from "./app.js";
 import { appConfig } from "./configs/index.js";
+import { db } from "./models/index.js";
 
 let isShuttingDown = false;
+await db.connectDatabase();
 
 const server = app.listen(appConfig.port, () => {
     console.log(`Server is running on port: ${appConfig.port}\n`)
@@ -32,14 +34,22 @@ const shutDown = async (signal: string, exitCode: number = 0) => {
             });
             server.closeIdleConnections();
         })
-        process.exitCode = exitCode;
     }
     catch (error){
         console.error("Error closing HTTP server:", error);
         exitCode = 1;
     }
+
+    try {
+        await db.disconnectDatabase();
+    }
+    catch (error){
+        console.error("Error disconnecting database:", error);
+        exitCode = 1;
+    }
     finally {
         clearTimeout(shutDownTimer);
+        process.exitCode = exitCode;
     }
 }
 
