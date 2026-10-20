@@ -1,12 +1,20 @@
+import {
+  Home,
+  Learn,
+  SignIn,
+  SignUp,
+  NotFound,
+} from "../pages";
+
 const routesConfig = {
-  home: { path: "/", element: <></>},
-  signin: { path: "/signin", element: <></>},
-  signup: { path: "/signup", element: <></>},
+  home: { path: "/", element: <Home/>},
+  signin: { path: "/signin", element: <SignIn/>},
+  signup: { path: "/signup", element: <SignUp/>},
+  learn: { path: "/learn/:id", element: <Learn/>}, // for learning 
   deck: { path: "/deck/:id", element: <></>}, // for editing
-  learn: { path: "/learn/:id", element: <></>}, // for learning 
   new: { path: "/new", element: <></>}, // to create new deck
-  notFound: { path: "*", element: <p>404</p>}, // 404 not found
-}
+  notFound: { path: "*", element: <NotFound/>}, // 404 not found
+};
 
 export {
   routesConfig
