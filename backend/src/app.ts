@@ -4,6 +4,10 @@ import cors from "cors";
 import { appConfig } from "./configs/index.js";
 import helmet from "helmet";
 import { errorMiddleware } from "./middlewares/index.js";
+import { 
+    deckRoutes,
+    cardRoutes
+ } from "./routes/index.js";
 
 const app = express();
 
@@ -22,6 +26,9 @@ app.disable("x-powered-by");
 app.get("/health", (req: Request, res: Response) => {
     res.status(200).json({ message: "ok"})
 })
+
+app.use("/deck", deckRoutes.router);
+app.use("/card", cardRoutes.router);
 
 app.use(errorMiddleware.errorHandler);
 
