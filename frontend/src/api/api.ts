@@ -4,13 +4,21 @@ import { AppError } from "../utils/index";
 type args = {
     url: string,
     method: "post" | "get" | "put" | "delete";
+    body?: Record<string, unknown>;
 }
 
 const fetchAPI = async (args: args) => {
     let response: Response;
     try {
         response = await fetch(`${appConfig.backendURL}${args.url}`, {
-            method: args.method
+            method: args.method,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: args.body === undefined
+                ? undefined
+                : JSON.stringify(args.body),
+            credentials: "include",
         })
     }
     catch {
