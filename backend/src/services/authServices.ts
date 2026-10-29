@@ -28,7 +28,7 @@ const login = async(idToken: string) => {
 const me = async(userId: string) => {
     const query = { _id: userId };
     const user = await userModel.User.findOne(query);
-    return user    
+    return user;
 }
 
 export {
