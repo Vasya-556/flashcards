@@ -1,8 +1,6 @@
 import {
   Home,
   Learn,
-  SignIn,
-  SignUp,
   Login,
   NewDeck,
   EditDeck,
@@ -11,8 +9,6 @@ import {
 
 const routesConfig = {
   home: { path: "/", element: <Home/>},
-  signin: { path: "/signin", element: <SignIn/>},
-  signup: { path: "/signup", element: <SignUp/>},
   login: { path: "/login", element: <Login/>},
   learn: { path: "/learn/:id", element: <Learn/>},
   editDeck: { path: "/deck/:id", element: <EditDeck/>},
