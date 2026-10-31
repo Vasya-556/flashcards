@@ -1,5 +1,9 @@
 import styles from "./EditDeck.module.css";
-import { useParams } from "react-router-dom";
+import { 
+  useParams,
+  generatePath,
+  Link,
+ } from "react-router-dom";
 import { 
   deckServices,
   cardServices,
@@ -8,97 +12,49 @@ import {
   useState,
   useEffect,
  } from "react";
-import { cardTypes } from "../../types";
+import { routesConfig } from "../../configs";
+import { EditCard, NewCard } from "../../components";
 
 function EditDeck() {
   const params = useParams();
-  const deckId = params.id;
+  const deckId = String(params.id);
   const [name, setName] = useState<string>("");
   const [cards, setCards] = useState<{_id: string, front: string, back: string, alwaysShowFront: boolean, progress: number}[]| null>(null);
-  const [front, setFront] = useState<string>("");
-  const [back, setBack] = useState<string>("");
-  const [alwaysShowFront, setAlwaysShowFront] = useState<boolean>(false);
   const [editCard, setEditCard] = useState<boolean>(false);
-  const [editFront, setEditFront] = useState<string>("");
-  const [editBack, setEditBack] = useState<string>("");
-  const [editAlwaysShowFront, setEditAlwaysShowFront] = useState<boolean>(false);
-  
 
   const handleUpdateDeck = async (e?: React.BaseSyntheticEvent) => {
     e?.preventDefault();
 
-    if (typeof deckId !== "string"){
-      return
-    }
-
     await deckServices.updateDeck(deckId, name);
-  }
-
-  const set = async () => {
-    if (typeof deckId !== "string"){
-      return
-    }
-    
-    const cards = await cardServices.getCards(deckId);
-    setCards(cards);
-  }
-
-  useEffect(() => {
-    set();
-  }, []);
-
-  const handleCreateCard = async (e?: React.BaseSyntheticEvent) => {
-    e?.preventDefault();
-
-    if (typeof deckId !== "string"){
-      return
-    }
-    
-    const data: cardTypes.CardInput = {
-      front: front,
-      back: back,
-      alwaysShowFront: alwaysShowFront
-    }
-    await cardServices.createCard(deckId, data);
-    set();
-  }
+  };
 
   const handleDeleteDeck = async (e?: React.BaseSyntheticEvent) => {
     e?.preventDefault();
 
-    if (typeof deckId !== "string"){
-      return
-    }
-
     await deckServices.deleteDeck(deckId);
-  }
+  };
 
   const handleDeleteCard = async (cardId: string, e?: React.BaseSyntheticEvent) => {
     e?.preventDefault();
 
-    if (typeof deckId !== "string"){
-      return
-    }
-
     await cardServices.deleteCard(deckId, cardId);
-    set()
-  } 
-  
-  const handleEditCard = async(cardId: string, e?: React.BaseSyntheticEvent) => {
-    e?.preventDefault();
+    loadCards()
+  };
 
-    if (typeof deckId !== "string"){
-      return
-    }
+  const loadCards = async () => {    
+    const cards = await cardServices.getCards(deckId);
+    setCards(cards);
+  };
 
-    const data: cardTypes.CardInput = {
-      front: editFront,
-      back: editBack,
-      alwaysShowFront: editAlwaysShowFront
-    }
+  const loadDeck = async () => {
+    const deck = await deckServices.getDeck(deckId);
+    setName(deck.name);
+  };
 
-    await cardServices.updateCard(deckId, cardId, data);
-  }
+  useEffect(() => {
+    loadCards();
+    loadDeck();
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -109,12 +65,8 @@ function EditDeck() {
       <form onSubmit={handleDeleteDeck}>
         <button>Delete deck</button>
       </form>
-      <form onSubmit={handleCreateCard}>
-        <input value={front} placeholder="front" onChange={(e) => setFront(e.target.value)}></input>
-        <input value={back} placeholder="back" onChange={(e) => setBack(e.target.value)}></input>
-        <input checked={alwaysShowFront} placeholder="always show front?" type="checkbox" onChange={(e) => setAlwaysShowFront(e.target.checked)}></input>
-        <button>Create card</button>
-      </form>
+      <NewCard deckId={String(deckId)} onCardCreate={loadCards}/>
+      <Link to={generatePath(routesConfig.learn.path, { id: deckId})}>Learn</Link>
       {
         cards ? cards.map((card, index) => (
           <div key={index}>
@@ -129,12 +81,12 @@ function EditDeck() {
             {
               editCard
               ? 
-              <form onSubmit={() => handleEditCard(card._id)}>
-                <input placeholder="front" value={editFront} onChange={(e) => setEditFront(e.target.value)}></input>
-                <input placeholder="back" value={editBack} onChange={(e) => setEditBack(e.target.value)}></input>
-                <input placeholder="always show front" type="checkbox" checked={editAlwaysShowFront} onChange={(e) => setEditAlwaysShowFront(e.target.checked)}></input>
-                <button>Save</button>
-              </form>
+              <>
+                <EditCard deckId={deckId} cardId={card._id} onCardEdit={() => {
+                  loadCards();
+                  setEditCard(!editCard)
+                }}/>
+              </>
               : <></>
             }
             <br/>

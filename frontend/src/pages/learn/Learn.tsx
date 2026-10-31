@@ -5,9 +5,13 @@ import {
 import styles from "./Learn.module.css";
 import { 
   cardServices,
-  deckServices
  } from "../../services";
-import { useParams } from "react-router-dom";
+import { 
+  useParams,
+  Link,
+  generatePath,
+ } from "react-router-dom";
+import { routesConfig } from "../../configs";
 
 type Card = {
   _id: string,
@@ -78,6 +82,7 @@ function Learn() {
 
   return (
     <div className={styles.container}>
+      <Link to={generatePath(routesConfig.editDeck.path, { id: deckId})}>Edit</Link><br/>
       {
         cards && cards.length > 0
         ? <div>
