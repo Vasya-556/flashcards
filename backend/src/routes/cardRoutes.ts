@@ -4,10 +4,15 @@ import { authMiddleware } from "../middlewares/index.js";
 
 const router = Router();
 
-router.get("/", authMiddleware.requireAuth, cardControllers.getCard);
-router.post("/", authMiddleware.requireAuth, cardControllers.postCard);
-router.patch("/:id", authMiddleware.requireAuth, cardControllers.updateCard);
-router.delete("/:id", authMiddleware.requireAuth, cardControllers.deleteCard);
+router.use(authMiddleware.requireAuth);
+
+router.get("/:deckId/:cardId", cardControllers.getCard);
+router.get("/:deckId", cardControllers.getCards);
+router.post("/:deckId", cardControllers.postCard);
+router.patch("/:deckId/:cardId", cardControllers.updateCard);
+router.patch("/:deckId/:cardId/increase", cardControllers.increaseProgress);
+router.patch("/:deckId/:cardId/decrease", cardControllers.decreaseProgress);
+router.delete("/:deckId/:cardId", cardControllers.deleteCard);
 
 export {
     router

@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 
 const deckSchema = new mongoose.Schema({
-    cards: [{
+    owner: {
         required: true,
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Card"
-    }],
-    owner: {
+        ref: "User"
+    },
+    name: {
         required: true,
         type: String,
     }

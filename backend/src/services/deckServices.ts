@@ -1,48 +1,69 @@
-import { deckModel } from "../models/index.js";
+import { 
+    cardModel,
+    deckModel
+ } from "../models/index.js";
 
-const getDeck = async () => {
-    const decks = await deckModel.Deck.find();
+const getDeck = async (
+    owner: string,
+    deckId: string,
+) => {
+    const deck = await deckModel.Deck.findOne({ _id: deckId, owner: owner });
+    
+    return deck;
+}
+
+const getDecks = async (
+    owner: string,
+) => {
+    const decks = await deckModel.Deck.find({ owner: owner });
     
     return decks
 }
 
-const postDeck = async (cards: string[], owner: string) => {
+const postDeck = async (
+    owner: string,
+    name: string,
+) => {
     const deck = new deckModel.Deck({
-        cards,
-        owner
+        owner,
+        name,
     })
 
     return await deck.save();
 }
 
-const patchDeck = async (id: string, cards?: string[], owner?: string) => {
-    if (cards === undefined && owner === undefined) {
-        return await deckModel.Deck.findById(id);
-    }
-
-    const data: {cards?: string[], owner?: string} = {};
-
-    if (cards !== undefined){
-        data.cards = cards;
-    }
-
-    if (owner !== undefined){
-        data.owner = owner;
-    }
-
-    const deck = await deckModel.Deck.findByIdAndUpdate(id, data, {returnDocument: "after"});
+const patchDeck = async (
+    owner: string,
+    deckId: string,
+    name: string,
+) => {
+    const deck = await deckModel.Deck.findOneAndUpdate(
+        { _id: deckId, owner: owner },
+        { name: name },
+        { returnDocument: "after", runValidators: true}
+    )
 
     return deck;
 }
 
-const deleteDeck = async (id: string) => {
-    const deck = await deckModel.Deck.findByIdAndDelete(id);
+const deleteDeck = async (
+    owner: string,
+    deckId: string,
+) => {
+    const deck = await deckModel.Deck.findOneAndDelete({ _id: deckId, owner: owner });
+
+    if (!deck) {
+        return null;
+    }
+
+    await cardModel.Card.deleteMany({ deck: deck._id });
 
     return deck
 }
 
 export {
     getDeck,
+    getDecks,
     postDeck,
     patchDeck,
     deleteDeck,

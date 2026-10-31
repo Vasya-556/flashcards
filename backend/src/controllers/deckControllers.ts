@@ -2,8 +2,19 @@ import type { Request, Response, NextFunction } from "express";
 import { deckServices } from "../services/index.js";
 
 const getDeck = async(req: Request, res: Response, next: NextFunction) => {
+    const userId = req.session.userId;
+    const deckId = req.params.deckId;
+
+    if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    if (!deckId || typeof deckId !== "string") {
+        return res.status(401).json({ message: "Deck id was not provided" });
+    }
+
     try {
-        const deck = await deckServices.getDeck();
+        const deck = await deckServices.getDeck(userId, deckId);
         return res.status(200).json(deck);
     }
     catch (error) {
@@ -11,15 +22,36 @@ const getDeck = async(req: Request, res: Response, next: NextFunction) => {
     }
 }
 
-const postDeck = async(req: Request, res: Response, next: NextFunction) => {
-    const {cards, owner} = req.body;
-    
-    if (!cards || !owner){
-        return res.status(400).json({ error: "Cards and owner required"});
+const getDecks = async(req: Request, res: Response, next: NextFunction) => {
+    const userId = req.session.userId;
+
+    if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
     }
 
     try {
-        const deck = await deckServices.postDeck(cards, owner);
+        const decks = await deckServices.getDecks(userId);
+        return res.status(200).json(decks);
+    }
+    catch (error) {
+        next(error)
+    }
+}
+
+const postDeck = async(req: Request, res: Response, next: NextFunction) => {
+    const userId = req.session.userId;
+    const { name } = req.body;
+    
+    if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    if (typeof name !== "string" || !name.trim()){
+        return res.status(400).json({ message: "Deck name is required" });
+    }
+
+    try {
+        const deck = await deckServices.postDeck(userId, name.trim());
         res.status(201).json({ message: "Deck was created", deck: deck})
     }
     catch (error) {
@@ -28,19 +60,24 @@ const postDeck = async(req: Request, res: Response, next: NextFunction) => {
 }
 
 const updateDeck = async(req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id
-    const {cards, owner} = req.body;
+    const userId = req.session.userId;
+    const deckId = req.params.deckId;
+    const { name } = req.body;
 
-    if (!id || Array.isArray(id)){
-        return res.status(400).json({ error: "Valid deck id required"});
+    if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
     }
 
-    if (!cards && !owner){
-        return res.status(400).json({ error: "Cards or owner required"});
+    if (typeof name !== "string" || !name.trim()){
+        return res.status(400).json({ message: "Deck name is required" });
+    }
+
+    if (!deckId || typeof deckId !== "string") {
+        return res.status(401).json({ message: "Deck id was not provided" });
     }
 
     try {
-        const deck = await deckServices.patchDeck(id, cards, owner);
+        const deck = await deckServices.patchDeck(userId, deckId, name.trim());
         if (!deck){
             return res.status(404).json({ message: "Deck was not found"});
         }
@@ -52,14 +89,19 @@ const updateDeck = async(req: Request, res: Response, next: NextFunction) => {
 }
 
 const deleteDeck = async(req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id
+    const userId = req.session.userId;
+    const deckId = req.params.deckId;
 
-    if (!id || Array.isArray(id)){
-        return res.status(400).json({ error: "Valid deck id required"});
+    if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    if (!deckId || typeof deckId !== "string") {
+        return res.status(401).json({ message: "Deck id was not provided" });
     }
 
     try {
-        const deck = await deckServices.deleteDeck(id);
+        const deck = await deckServices.deleteDeck(userId, deckId);
         if (!deck){
             return res.status(404).json({ message: "Deck was not found"});
         }
@@ -72,6 +114,7 @@ const deleteDeck = async(req: Request, res: Response, next: NextFunction) => {
 
 export {
     getDeck,
+    getDecks,
     postDeck,
     updateDeck,
     deleteDeck,
