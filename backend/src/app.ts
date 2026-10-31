@@ -40,7 +40,7 @@ const sessionStore = session({
         secure: appConfig.isProd,
         httpOnly: true,
         sameSite: "lax",
-        maxAge: authConfig.touchAfter,
+        maxAge: authConfig.maxAge,
         path: "/",
     }
 })
