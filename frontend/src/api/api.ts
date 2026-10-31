@@ -3,7 +3,7 @@ import { AppError } from "../utils/index";
 
 type args = {
     url: string,
-    method: "post" | "get" | "put" | "delete";
+    method: "post" | "get" | "put" | "PATCH" | "delete";
     body?: Record<string, unknown>;
 }
 

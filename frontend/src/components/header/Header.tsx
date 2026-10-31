@@ -15,8 +15,7 @@ function Header() {
             <Logout/>
           </>
           : <>
-            <Link to={routesConfig.signin.path}>Sign in</Link>
-            <Link to={routesConfig.signup.path}>Sign up</Link>
+            <Link to={routesConfig.login.path}>Log in</Link>
           </>
         }
     </header>
