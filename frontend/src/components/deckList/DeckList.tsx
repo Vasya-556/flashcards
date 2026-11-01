@@ -13,18 +13,23 @@ import { routesConfig } from "../../configs";
 function DeckList() {
   const [decks, setDecks] = useState<{name: string, _id: string}[]|null>(null);
 
-  const set = async () => {
-    const decks = await deckServices.getDecks();
-    setDecks(decks);
+  const loadDecks = async () => {
+    try {
+      const decks = await deckServices.getDecks();
+      setDecks(decks);
+    }
+    catch{
+      setDecks([]);
+    }
   }
 
   useEffect(() => {
-    set();
+    loadDecks();
   }, [])
 
   const handleDelete = async (deckId: string) => {
     await deckServices.deleteDeck(deckId);
-    await set();
+    await loadDecks();
   }
 
   return (
