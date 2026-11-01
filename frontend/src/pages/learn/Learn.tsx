@@ -25,23 +25,21 @@ type Card = {
 function Learn() {
   const [cards, setCards] = useState<Card[]>();
   const params = useParams();
-  const deckId = params.id;
+  const deckId = String(params.id);
   const [showFront, setShowFront] = useState<boolean>(() => Math.random() > 0.5);
 
-  const set = async () => {
-    if (typeof deckId !== "string"){
-      return
+  const loadCards = async () => {
+    try {
+      let cards = await cardServices.getCards(deckId);
+      shuffle(cards)
+      setCards(cards);
     }
-    let cards2 = await cardServices.getCards(deckId);
-    shuffle(cards2)
-    setCards(cards2);
+    catch {
+      setCards([]);
+    }
   }
 
   const handleCorrect = async (cardId: string) => {
-    if (typeof deckId !== "string"){
-      return;
-    }
-    
     await cardServices.increaseProgress(deckId, cardId);
 
     setCards(current => current?.slice(1));
@@ -49,10 +47,6 @@ function Learn() {
   }
 
   const handleIncorrect = async (cardId: string) => {
-    if (typeof deckId !== "string"){
-      return;
-    }
-
     await cardServices.decreaseProgress(deckId, cardId);
 
     setCards(current => {
@@ -73,7 +67,7 @@ function Learn() {
   }
 
   useEffect(() => {
-    set();
+    loadCards();
   }, []);
 
   const handleFlip = () => {

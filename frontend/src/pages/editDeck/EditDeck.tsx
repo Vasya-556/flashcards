@@ -41,19 +41,29 @@ function EditDeck() {
     loadCards()
   };
 
-  const loadCards = async () => {    
-    const cards = await cardServices.getCards(deckId);
-    setCards(cards);
+  const loadCards = async () => {
+    try{
+      const cards = await cardServices.getCards(deckId);
+      setCards(cards);
+    }
+    catch {
+      setCards([]);
+    }
   };
 
-  const loadDeck = async () => {
-    const deck = await deckServices.getDeck(deckId);
-    setName(deck.name);
+  const loadDeckName = async () => {
+    try{
+      const deck = await deckServices.getDeck(deckId);
+      setName(deck.name);
+    }
+    catch{
+      setName("Error");
+    }
   };
 
   useEffect(() => {
     loadCards();
-    loadDeck();
+    loadDeckName();
   }, []);
 
   return (
