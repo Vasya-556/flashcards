@@ -47,13 +47,13 @@ jobs:
       PORT: ${{ vars.PORT }}
       PROTOCOL: ${{ vars.PROTOCOL }}
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      DB_USERNAME: ${{ vars.DB_USERNAME }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      DB_NAME: ${{ vars.DB_NAME }}
+      DB_NAME: ${{ secrets.DB_NAME }}
       DB_URL: ${{ secrets.DB_URL }}
       GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
       SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
-      TEST_USER_ID: ${{ vars.TEST_USER_ID }}
+      TEST_USER_ID: ${{ secrets.TEST_USER_ID }}
 
       # frontend
       VITE_BACKEND_URL: ${{ vars.VITE_BACKEND_URL }}
