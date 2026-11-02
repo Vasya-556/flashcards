@@ -13,21 +13,21 @@ import { authServices } from "./services";
 function App() {
   const auth = useAuth();
 
-  const setUser = async() => {
-    try {
-      const user = await authServices.me();
-      if (user !== null) {
-        auth.setAuth(user);
+  useEffect(() => {
+    const setUser = async() => {
+      try {
+        const user = await authServices.me();
+        if (user !== null) {
+          auth.setAuth(user);
+        }
+      }
+      catch (error) {
+        console.error(error);
       }
     }
-    catch (error) {
-      console.error(error);
-    }
-  }
-
-  useEffect(() => {
+    
     setUser();
-  }, [])
+  }, [auth])
 
   return <div>
     <HashRouter>

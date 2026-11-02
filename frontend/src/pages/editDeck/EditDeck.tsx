@@ -11,6 +11,7 @@ import {
 import { 
   useState,
   useEffect,
+  useCallback,
  } from "react";
 import { routesConfig } from "../../configs";
 import { EditCard, NewCard } from "../../components";
@@ -41,7 +42,7 @@ function EditDeck() {
     loadCards()
   };
 
-  const loadCards = async () => {
+  const loadCards = useCallback(async () => {
     try{
       const cards = await cardServices.getCards(deckId);
       setCards(cards);
@@ -49,9 +50,9 @@ function EditDeck() {
     catch {
       setCards([]);
     }
-  };
+  }, [deckId]);
 
-  const loadDeckName = async () => {
+  const loadDeckName = useCallback(async () => {
     try{
       const deck = await deckServices.getDeck(deckId);
       setName(deck.name);
@@ -59,12 +60,12 @@ function EditDeck() {
     catch{
       setName("Error");
     }
-  };
+  }, [deckId]);
 
   useEffect(() => {
     loadCards();
     loadDeckName();
-  }, []);
+  }, [loadCards, loadDeckName]);
 
   return (
     <div className={styles.container}>

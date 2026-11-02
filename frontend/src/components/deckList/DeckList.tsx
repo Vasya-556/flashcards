@@ -14,6 +14,7 @@ function DeckList() {
   const [decks, setDecks] = useState<{name: string, _id: string}[]|null>(null);
 
   const loadDecks = async () => {
+    console.log(1);
     try {
       const decks = await deckServices.getDecks();
       setDecks(decks);

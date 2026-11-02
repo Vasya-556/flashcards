@@ -1,6 +1,7 @@
 import { 
   useState,
   useEffect,
+  useCallback,
  } from "react";
 import styles from "./Learn.module.css";
 import { 
@@ -23,6 +24,14 @@ type Card = {
   progress: number,
 }
 
+const shuffle = (cards: Card[]) => {
+  for (let i = cards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i+1));
+    
+    [cards[i], cards[j]] = [cards[j], cards[i]]
+  };
+};
+
 function Learn() {
   const [cards, setCards] = useState<Card[]>();
   const [showFront, setShowFront] = useState<boolean>(() => Math.random() > 0.5);
@@ -32,7 +41,7 @@ function Learn() {
   const navigate = useNavigate();
   const deckId = String(params.id);
 
-  const loadCards = async () => {
+  const loadCards = useCallback(async () => {
     setHasStartedLearning(false);
     try {
       let cards: Card[] | null = await cardServices.getCards(deckId);
@@ -47,7 +56,7 @@ function Learn() {
     catch {
       setCards([]);
     }
-  }
+  }, [deckId]);
 
   const handleCorrect = async (cardId: string) => {
     setHasStartedLearning(true);
@@ -73,17 +82,9 @@ function Learn() {
     setShowFront(() => Math.random() > 0.5);
   }
 
-  const shuffle = (cards: Card[]) => {
-    for (let i = cards.length - 1; i > 0; i--) {
-      let j = Math.floor(Math.random() * (i+1));
-      
-      [cards[i], cards[j]] = [cards[j], cards[i]]
-    }
-  }
-
   useEffect(() => {
     loadCards();
-  }, []);
+  }, [loadCards]);
 
   const handleFlip = () => {
     setFlipped(true);
