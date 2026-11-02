@@ -1,8 +1,12 @@
 import { OAuth2Client } from "google-auth-library";
 import { authConfig } from "../configs/index.js";
 import { userModel } from "../models/index.js";
+import { appConfig } from "../configs/index.js";
 
 const login = async(idToken: string) => {
+    if (!appConfig.isProd && idToken === "test"){
+        return await userModel.User.findById(appConfig.testUserId);
+    }
     const client = new OAuth2Client();
     const ticket = await client.verifyIdToken({
         idToken: idToken,
