@@ -1,0 +1,61 @@
+name: CI/CD
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  ci:
+    permissions:
+      contents: write
+    runs-on: ubuntu-lates
+    container:
+      image: node:22
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Backend testing
+        working-directory: backend
+        run: |
+          npm ci
+          npm test -- --run
+          npm run build
+      
+      - name: Start backend
+        working-directory: backend
+        run: |
+          npm run dev > /tmp/backend.log 2>&1 &
+      
+      - name: Frontend testing
+        working-directory: frontend
+        run: |
+          npm ci
+          npm test -- --run
+      
+      - name: Frontend testing
+        working-directory: frontend
+        run: |
+          git remote set-url origin https://git:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+          npm run deploy
+    
+    env:
+      # backend
+      FRONTEND_URL: ${{ vars.FRONTEND_URL }}
+      IS_PRODUCTION: ${{ vars.IS_PRODUCTION }}
+      PORT: ${{ vars.PORT }}
+      PROTOCOL: ${{ vars.PROTOCOL }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      DB_USERNAME: ${{ vars.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ vars.DB_NAME }}
+      DB_URL: ${{ secrets.DB_URL }}
+      GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
+      SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+      TEST_USER_ID: ${{ vars.TEST_USER_ID }}
+
+      # frontend
+      VITE_BACKEND_URL: ${{ vars.VITE_BACKEND_URL }}
+      VITE_IS_PRODUCTION: ${{ vars.VITE_IS_PRODUCTION }}
+      VITE_GOOGLE_CLIENT_ID: ${{ vars.VITE_GOOGLE_CLIENT_ID }}
