@@ -4,12 +4,22 @@ import {
  } from "react-router-dom";
 import { routesConfig } from "../../configs";
 import { DeckList } from "../../components";
+import { useAuth } from "../../hooks";
 
 function Home() {
+  const auth = useAuth();
+
   return (
     <div className={styles.container}>
-      <Link to={routesConfig.newDeck.path}>New deck</Link>
-      <DeckList/>
+      {
+        auth.auth
+        ? <>
+          <Link to={routesConfig.newDeck.path}>New deck</Link>
+          <DeckList/>
+        </>
+        : <>
+        </>
+      }
     </div>
   )
 }
