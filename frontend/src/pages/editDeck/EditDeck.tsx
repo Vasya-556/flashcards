@@ -2,7 +2,7 @@ import styles from "./EditDeck.module.css";
 import { 
   useParams,
   generatePath,
-  Link,
+  useNavigate,
  } from "react-router-dom";
 import { 
   deckServices,
@@ -11,17 +11,22 @@ import {
 import { 
   useState,
   useEffect,
-  useCallback,
+  useRef,
  } from "react";
 import { routesConfig } from "../../configs";
 import { EditCard, NewCard } from "../../components";
+import Button from "../../components/button/Button";
+import Input from "../../components/input/Input";
 
 function EditDeck() {
   const params = useParams();
   const deckId = String(params.id);
+  const formRef = useRef<HTMLFormElement>(null);
   const [name, setName] = useState<string>("");
   const [cards, setCards] = useState<{_id: string, front: string, back: string, alwaysShowFront: boolean, progress: number}[]| null>(null);
-  const [editCard, setEditCard] = useState<boolean>(false);
+  const [editCard, setEditCard] = useState<string[]>([]);
+  const [reload, setReload] = useState(false);
+  const navigate = useNavigate();
 
   const handleUpdateDeck = async (e?: React.BaseSyntheticEvent) => {
     e?.preventDefault();
@@ -39,74 +44,141 @@ function EditDeck() {
     e?.preventDefault();
 
     await cardServices.deleteCard(deckId, cardId);
-    loadCards()
+    setReload(current => !current);
   };
 
-  const loadCards = useCallback(async () => {
-    try{
-      const cards = await cardServices.getCards(deckId);
-      setCards(cards);
-    }
-    catch {
-      setCards([]);
-    }
-  }, [deckId]);
-
-  const loadDeckName = useCallback(async () => {
-    try{
-      const deck = await deckServices.getDeck(deckId);
-      setName(deck.name);
-    }
-    catch{
-      setName("Error");
-    }
-  }, [deckId]);
-
   useEffect(() => {
+    const loadDeckName = async () => {
+      try{
+        const deck = await deckServices.getDeck(deckId);
+        setName(deck.name);
+      }
+      catch{
+        setName("Error");
+      }
+    };
+    
+    const loadCards = async () => {
+      try{
+        const cards = await cardServices.getCards(deckId);
+        setCards(cards);
+      }
+      catch {
+        setCards([]);
+      }
+    };
+
     loadCards();
     loadDeckName();
-  }, [loadCards, loadDeckName]);
+  }, [reload, deckId]);
+
+  const toggleEditCard = (cardId: string) => {
+    setEditCard(
+      current => 
+      current.includes(cardId)
+        ? current.filter(id => id !== cardId)
+        : [...current, cardId]
+    )
+  }
+
+  const handleCreateCard = () => {
+    formRef.current?.requestSubmit();
+  }
 
   return (
     <div className={styles.container}>
-      <form onSubmit={handleUpdateDeck}>
-        <input value={name} onChange={(e) => setName(e.target.value)}></input>
-        <button>Update deck</button>
-      </form>
-      <form onSubmit={handleDeleteDeck}>
-        <button>Delete deck</button>
-      </form>
-      <NewCard deckId={String(deckId)} onCardCreate={loadCards}/>
-      <Link to={generatePath(routesConfig.learn.path, { id: deckId})}>Learn</Link>
-      {
-        cards ? cards.map((card, index) => (
-          <div key={index}>
-            <p>{card.front}</p>
-            <p>{card.back}</p>
-            {
-              card.alwaysShowFront
-              ? <p>true</p>
-              : <p>false</p>
-            }
-            <button onClick={() => setEditCard(!editCard)}>Edit</button>
-            {
-              editCard
-              ? 
-              <>
-                <EditCard deckId={deckId} cardId={card._id} onCardEdit={() => {
-                  loadCards();
-                  setEditCard(!editCard)
-                }}/>
-              </>
-              : <></>
-            }
-            <br/>
-            <button onClick={() => handleDeleteCard(card._id)}>Delete card</button>
-            <hr/>
+      <div className={styles.header}>
+        <div className={styles.deckControlls}>
+          <Input
+            label="Deck name"
+            category="default"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <Button
+            onClick={handleUpdateDeck}
+            category="blue"
+            text="Update deck"
+          />
+          <Button
+            onClick={handleDeleteDeck}
+            category="red"
+            text="Delete deck"
+          />
+        </div>
+        <div className={styles.cardControlls}>
+          <NewCard 
+            deckId={String(deckId)}
+            onCardCreate={() => setReload(current => !current)}
+            formRef={formRef} 
+          />
+          <div className={styles.cardControllsContainer}>
+            <Button
+              onClick={handleCreateCard}
+              category="green"
+              text="Create card"
+            />
+            <Button
+              onClick={() => navigate(generatePath(routesConfig.learn.path, { id: deckId}))}
+              category="blue"
+              text="Learn"
+            />
           </div>
-        ))
-        : <></>
-      }
+        </div>
+      </div>
+      <div className={styles.cards}>
+        {
+          cards && cards.length > 0 ? cards.map((card, index) => (
+            <div key={index} className={styles.card}>
+              <div className={styles.cardInfo}>
+                <span>Front: {card.front}</span>
+                <span>Back: {card.back}</span>
+                <div>
+                  <span>Always show front first: </span>
+                  {
+                    card.alwaysShowFront
+                    ? <span>true</span>
+                    : <span>false</span>
+                  }
+                </div>
+              </div>
+              {
+                editCard.includes(card._id)
+                ? 
+                <>
+                  <EditCard 
+                    deckId={deckId} 
+                    cardId={card._id} 
+                    onCardEdit={() => {
+                      setReload(current => !current);
+                      toggleEditCard(card._id);
+                    }}
+                    initialFront={card.front}
+                    initialBack={card.back}
+                    initialAlwaysShowFront={card.alwaysShowFront}
+                  />
+                </>
+                : <></>
+              }
+              <div className={styles.cardActions}>
+                <Button
+                  onClick={() => toggleEditCard(card._id)}
+                  category="blue"
+                  text="Edit"
+                />
+                <Button
+                  onClick={() => handleDeleteCard(card._id)}
+                  category="red"
+                  text="Delete card"
+                />
+              </div>
+            </div>
+          ))
+          : <>
+          <h1>No cards available</h1>
+          </>
+        }
+      </div>
     </div>
   )
 }

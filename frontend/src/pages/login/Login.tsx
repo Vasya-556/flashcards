@@ -2,9 +2,13 @@ import styles from "./Login.module.css";
 import { GoogleLogin } from '@react-oauth/google';
 import { authServices } from "../../services";
 import { useAuth } from "../../hooks";
+import { useNavigate } from "react-router-dom";
+import { routesConfig } from "../../configs";
 
 function Login() {
   const auth = useAuth();
+  const navigate = useNavigate();
+
   const handleLogin = async (credentialResponse: {credential?: string}) => {
     const idToken = credentialResponse.credential;
 
@@ -14,6 +18,7 @@ function Login() {
 
     const user = await authServices.login({idToken});
     auth.setAuth(user);
+    navigate(routesConfig.home.path);
   }
   
   const handleError = () => {
@@ -22,10 +27,13 @@ function Login() {
   
   return (
     <div className={styles.container}>
-        <GoogleLogin
-          onSuccess={handleLogin}
-          onError={handleError}
-        />
+      <GoogleLogin
+        onSuccess={handleLogin}
+        onError={handleError}
+        theme="filled_black"
+        size="medium"
+        shape="rectangular"
+      />
     </div>
   )
 }

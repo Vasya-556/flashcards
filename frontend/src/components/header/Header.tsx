@@ -1,23 +1,36 @@
 import styles from "./Header.module.css";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { routesConfig } from "../../configs";
 import { Logout } from "../.";
 import { useAuth } from "../../hooks";
+import Button from "../button/Button";
 
 function Header() {
+  const navigate = useNavigate();
   const auth = useAuth();
   return (
     <header className={styles.container}>
-        <Link to={routesConfig.home.path}>Home</Link>
+      <div className={styles.content}>
+        <Button
+          onClick={() => navigate(routesConfig.home.path)}
+          text="Home"
+          category="blue"
+        />
         {
           auth.auth ?
           <>
             <Logout/>
           </>
-          : <>
-            <Link to={routesConfig.login.path}>Log in</Link>
+          : 
+          <>
+            <Button
+              onClick={() => navigate(routesConfig.login.path)}
+              text="Log in"
+              category="blue"
+            />
           </>
         }
+      </div>
     </header>
   )
 }

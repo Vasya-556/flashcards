@@ -5,42 +5,69 @@ import {
   useState
  } from "react";
 import { 
-  Link,
-  generatePath
+  generatePath,
+  useNavigate,
  } from "react-router-dom";
 import { routesConfig } from "../../configs";
+import Button from "../button/Button";
 
 function DeckList() {
   const [decks, setDecks] = useState<{name: string, _id: string}[]|null>(null);
-
-  const loadDecks = async () => {
-    try {
-      const decks = await deckServices.getDecks();
-      setDecks(decks);
-    }
-    catch{
-      setDecks([]);
-    }
-  }
+  const navigate = useNavigate();
 
   useEffect(() => {
+    const loadDecks = async () => {
+      try {
+        const decks = await deckServices.getDecks();
+        setDecks(decks);
+      }
+      catch{
+        setDecks([]);
+      }
+    }
+    
     loadDecks();
   }, [])
 
   const handleDelete = async (deckId: string) => {
     await deckServices.deleteDeck(deckId);
-    await loadDecks();
+    
+    try {
+      const decks = await deckServices.getDecks();
+      setDecks(decks);
+    }
+    catch {
+      setDecks([]);
+    }
   }
 
   return (
     <div className={styles.container}>
       {
         decks ? decks.map((deck, index) => (
-          <div key={index}>
-            <p>{deck.name}</p>
-            <Link to={generatePath(routesConfig.editDeck.path, { id: deck._id})}>Edit</Link><br/>
-            <Link to={generatePath(routesConfig.learn.path, { id: deck._id})}>Learn</Link>
-            <button onClick={() => handleDelete(deck._id)}>delete</button>
+          <div key={index} className={styles.deck}>
+            <div className={styles.header}>
+              <div className={styles.headerContainer}>
+                <p>{deck.name}</p>
+              </div>
+              <Button 
+                onClick={() => handleDelete(deck._id)}
+                text="Delete"
+                category="red"
+              />
+            </div>
+            <div className={styles.actions}>
+              <Button 
+                onClick={() => navigate(generatePath(routesConfig.learn.path, { id: deck._id}))}
+                text="Learn"
+                category="blue"
+              />
+              <Button 
+                onClick={() => navigate(generatePath(routesConfig.editDeck.path, { id: deck._id}))}
+                text="Edit"
+                category="blue"
+              />
+            </div>
           </div>
         ))
         : <></>

@@ -32,17 +32,19 @@ function App() {
   return <div>
     <HashRouter>
       <Header/>
-      <Routes>
-        {
-          Object.values(routesConfig).map(({path, element}, index) => (
-            <Route
-              key={index}
-              path={path}
-              element={element}
-            />
-          ))
-        }
-      </Routes>
+      <main>
+        <Routes>
+          {
+            Object.values(routesConfig).map(({path, element}, index) => (
+              <Route
+                key={index}
+                path={path}
+                element={element}
+              />
+            ))
+          }
+        </Routes>
+      </main>
     </HashRouter>
   </div>;
 }

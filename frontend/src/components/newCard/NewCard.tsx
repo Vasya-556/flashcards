@@ -2,13 +2,15 @@ import styles from "./NewCard.module.css";
 import { cardServices } from "../../services";
 import { cardTypes } from "../../types";
 import { useState } from "react";
+import Input from "../input/Input";
 
 type NewCardProps = {
   deckId: string;
   onCardCreate: () => void;
+  formRef: React.Ref<HTMLFormElement>;
 }
 
-function NewCard({deckId, onCardCreate}: NewCardProps) {
+function NewCard({deckId, onCardCreate, formRef}: NewCardProps) {
   const [front, setFront] = useState<string>("");
   const [back, setBack] = useState<string>("");
   const [alwaysShowFront, setAlwaysShowFront] = useState<boolean>(false);
@@ -30,12 +32,34 @@ function NewCard({deckId, onCardCreate}: NewCardProps) {
 
   return (
     <div className={styles.container}>
-      <form onSubmit={handleCreateCard}>
-        <input value={front} placeholder="front" onChange={(e) => setFront(e.target.value)}></input>
-        <input value={back} placeholder="back" onChange={(e) => setBack(e.target.value)}></input>
-        <label>Always show front</label>
-        <input checked={alwaysShowFront} placeholder="always show front?" type="checkbox" onChange={(e) => setAlwaysShowFront(e.target.checked)}></input>
-        <button>Create card</button>
+      <form 
+        onSubmit={handleCreateCard}
+        ref={formRef}
+        >
+        <div className={styles.fields}>
+          <Input 
+            label="Front" 
+            category="default"
+            value={front}
+            onChange={(e) => setFront(e.target.value)}
+          />
+          <Input 
+            label="Back"
+            category="default"
+            value={back}
+            onChange={(e) => setBack(e.target.value)}
+          />
+          <Input 
+            label="Show front first" 
+            category="checkbox"
+            labelProps={{
+              htmlFor: "alwaysShowFront"
+            }}
+            id="alwaysShowFront"
+            checked={alwaysShowFront}
+            onChange={(e) => setAlwaysShowFront(e.target.checked)}
+          /> 
+        </div>
       </form>
     </div>
   )

@@ -1,0 +1,51 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em;
+    justify-content: center;
+    align-items: start;
+}
+
+.container label {
+    display: flex;
+    align-items: start;
+    flex-direction: column;
+    gap: 0.5em;
+    color: var(--color-purple);
+}
+
+.container label:has(input[type="checkbox"]) {
+    flex-direction: row;
+    cursor: pointer;
+}
+
+.container input {
+    border: 1px solid var(--color-border);
+    color: var(--color-font);
+    background-color: var(--color-element);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.container input[type="text"]:focus,
+.container input[type="checkbox"]:hover {
+    box-shadow: 0 0 8px var(--color-purple);
+}
+
+.container input[type="text"]:focus {
+    border-color: var(--color-purple);
+}
+
+.container input[type="checkbox"] {
+    cursor: pointer;
+    accent-color: var(--color-purple);
+    background-color: var(--color-element);
+    border-radius: 0;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+}
+
+.container input[type="checkbox"]:checked {
+    background-color: var(--color-purple);
+}

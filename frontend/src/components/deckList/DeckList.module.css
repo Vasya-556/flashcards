@@ -1,0 +1,78 @@
+.container {
+    display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
+    max-width: calc(17em * 5 + 1em);
+    padding: 1em;
+    justify-content: center;
+}
+
+.deck::before {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    content: '';
+    background: var(--color-purple);
+    height: 4px;
+    padding: 1px;
+}
+
+.deck {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    background-color: var(--color-element);
+    width: var(--card-width);
+    height: var(--card-height);
+    border: 1px solid var(--color-border);
+    /* border-top: 5px solid var(--color-purple); */
+    border-top: 0;
+    padding: 1em;
+    position: relative;
+}
+
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    gap: 1em;
+}
+
+.header button {
+    width: 30%;
+    flex-shrink: 0;
+}
+
+.headerContainer {
+    min-width: 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.headerContainer p {
+    overflow: hidden;
+    white-space: nowrap;
+    margin: 0;
+}
+
+.actions {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.actions button:first-child {
+    width: 60%;
+}
+
+.actions button:last-child {
+    width: 30%;
+}

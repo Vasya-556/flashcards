@@ -1,8 +1,16 @@
-:root {
-  /* z indexes here
-  --z-component: 1; */
+@font-face {
+  font-family: "Nunito";
+  font-weight: 400;
+  src: url("/fonts/Nunito-Regular.woff2") format("woff2");
+}
 
-  --text: #6b6375;
+:root {
+  --z-header: 1;
+
+  --card-height: 22em;
+  --card-width: 16em;
+
+  /* --text: #6b6375;
   --text-h: #08060d;
   --bg: #fff;
   --border: #e5e4e7;
@@ -12,11 +20,25 @@
   --accent-border: rgba(170, 59, 255, 0.5);
   --social-bg: rgba(244, 243, 236, 0.5);
   --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px; */
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  --color-background: #090c13;
+  --color-element: #171e28;
+  --color-purple: #a47de8;
+  --color-red: #ed5a48;
+  --color-green: #3ed471;
+  --color-blue: #7690b1;
+  --color-font: #e9edf6;
+  --color-border: #393f49;
+
+  /* --color-background: #eef0f7;
+  --color-element: #d8dfe9;
+  --color-purple: #3e1782;
+  --color-red: #b52512;
+  --color-green: #2ac05c;
+  --color-blue: #4e6788;
+  --color-font: #090d16;
+  --color-border: #b8bdc7; */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -35,7 +57,16 @@
   }
 }
 
-#root {
+body {
   margin: 0;
+  background-color: var(--color-background);
+  color: var(--color-font);
+
+  font-family: "Nunito", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
   box-sizing: border-box;
 }

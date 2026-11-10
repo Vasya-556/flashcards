@@ -1,7 +1,6 @@
 import { 
   useState,
   useEffect,
-  useCallback,
  } from "react";
 import styles from "./Learn.module.css";
 import { 
@@ -9,11 +8,11 @@ import {
  } from "../../services";
 import { 
   useParams,
-  Link,
   generatePath,
   useNavigate,
  } from "react-router-dom";
 import { routesConfig } from "../../configs";
+import Button from "../../components/button/Button";
 
 type Card = {
   _id: string,
@@ -36,27 +35,11 @@ function Learn() {
   const [cards, setCards] = useState<Card[]>();
   const [showFront, setShowFront] = useState<boolean>(() => Math.random() > 0.5);
   const [hasStartedLearning, setHasStartedLearning] = useState<boolean>(false);
-  const [flipped, setFlipped] = useState<boolean>(false)
+  const [flipped, setFlipped] = useState<boolean>(false);
+  const [reload, setReload] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
   const deckId = String(params.id);
-
-  const loadCards = useCallback(async () => {
-    setHasStartedLearning(false);
-    try {
-      let cards: Card[] | null = await cardServices.getCards(deckId);
-      if (cards === null){
-        setCards([]);
-        return;
-      }
-      cards = cards.filter((card) => card.progress < 100)
-      shuffle(cards);
-      setCards(cards);
-    }
-    catch {
-      setCards([]);
-    }
-  }, [deckId]);
 
   const handleCorrect = async (cardId: string) => {
     setHasStartedLearning(true);
@@ -83,39 +66,86 @@ function Learn() {
   }
 
   useEffect(() => {
+    const loadCards = async () => {
+      setHasStartedLearning(false);
+      try {
+        let cards: Card[] | null = await cardServices.getCards(deckId);
+        if (cards === null){
+          setCards([]);
+          return;
+        }
+        cards = cards.filter((card) => card.progress < 100)
+        shuffle(cards);
+        setCards(cards);
+      }
+      catch {
+        setCards([]);
+      }
+    };
+
     loadCards();
-  }, [loadCards]);
+  }, [deckId, reload]);
 
   const handleFlip = () => {
+    const isShowingFront = !flipped ? true : showFront;
+
     setFlipped(true);
-    setShowFront(!showFront);
+    setShowFront(!isShowingFront);
   }
 
   return (
     <div className={styles.container}>
-      <Link to={generatePath(routesConfig.editDeck.path, { id: deckId})}>Edit</Link><br/>
+      <Button
+        onClick={() => navigate(generatePath(routesConfig.editDeck.path, { id: deckId}))}
+        category="blue"
+        text="Edit deck"
+      />
       {
         cards && cards.length > 0
-        ? <div>
-          {
-            cards[0].alwaysShowFront && !flipped
-            ? <p>{cards[0].front}</p>
-            : (
-              showFront
-              ? <p>{cards[0].front}</p>
-              : <p>{cards[0].back}</p>
-            )
-          }
-          <button onClick={() => handleCorrect(cards[0]._id)}>correct</button>
-          <button onClick={() => handleIncorrect(cards[0]._id)}>incorrect</button>
-          <button onClick={handleFlip}>flip</button>
+        ? <div className={styles.card}>
+          <Button
+            onClick={() => handleIncorrect(cards[0]._id)}
+            category="red"
+            text="Incorrect"
+          />
+          <div onClick={handleFlip} className={styles.cardText}>
+            {
+              !flipped
+              ? (
+                cards[0].alwaysShowFront || showFront
+                ? <pre>{cards[0].front}</pre>
+                : showFront
+                  ? <pre>{cards[0].front}</pre>
+                  : <pre>{cards[0].back}</pre>
+              )
+              : (
+                showFront
+                  ? <pre>{cards[0].front}</pre>
+                  : <pre>{cards[0].back}</pre>
+              )
+            }
+          </div>
+          <Button
+            onClick={() => handleCorrect(cards[0]._id)}
+            category="green"
+            text="Correct"
+          />
         </div>
-        : <div>
-          <p>No cards available</p>
-          <button onClick={() => navigate(-1)}>Back</button>
-          <Link to={generatePath(routesConfig.editDeck.path, { id: deckId})}>Crete cards</Link>
+        : <div className={styles.noCards}>
+          <h1>No cards available</h1>
+          <Button
+            onClick={() => navigate(-1)}
+            category="blue"
+            text="Back"
+          />
           {
-            hasStartedLearning ? <button onClick={() => loadCards()}>Try again</button> : <></>
+            hasStartedLearning 
+            ? <Button
+                onClick={() => setReload(current => !current)}
+                category="blue"
+                text="Try again"
+              />
+            : <></>
           }
         </div>
       }
