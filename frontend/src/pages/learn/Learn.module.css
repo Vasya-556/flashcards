@@ -1,0 +1,76 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 1em;
+    padding: 1em;
+}
+
+.noCards {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 1em;
+    padding: 1em;
+}
+
+.card::before {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    content: '';
+    background: var(--color-purple);
+    height: 4px;
+}
+
+.card {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: var(--color-element);
+    width: var(--card-width);
+    height: var(--card-height);
+    box-sizing: border-box;
+    position: relative;
+    border: 1px solid var(--color-border);
+    border-top: 0;
+}
+
+.cardText {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex:1;
+    min-width: 0;
+
+    width: 0;
+    flex-grow: 1;
+    padding: 1em;
+}
+
+.cardText pre {
+    width: 100%;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    overflow: hidden;
+    
+    line-height: 1.4em;
+    max-height: 9.8em;
+}
+
+.card button {
+    width: calc(var(--card-width)/3);
+    height: 100%;
+    border: 0;
+    border-radius: 0;
+    transform: none;
+    transition: filter 0.2s ease;
+}
+
+.card button:hover {
+    transform: none;
+    filter: brightness(1.2);
+}

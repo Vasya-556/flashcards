@@ -1,0 +1,96 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-direction: row;
+    padding: 1em;
+    gap: 1em;
+}
+
+.deckControlls {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.deckControlls button {
+    margin-left: 0.5em;
+    width: 60%;
+}
+
+.cardControlls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 1em;
+}
+
+.cardControllsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    max-width: calc(17em * 5 + 1em);
+}
+
+.card::before {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    content: '';
+    background: var(--color-purple);
+    height: 4px;
+    padding: 1px;
+}
+
+.card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    background-color: var(--color-element);
+    width: var(--card-width);
+    height: var(--card-height);
+    padding: 1em;
+    position: relative;
+    border: 1px solid var(--color-border);
+    border-top: 0;
+    gap: 1em;
+}
+
+.cardInfo {
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 0.5em;
+}
+
+.cardInfo span {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.cardActions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 1em
+}

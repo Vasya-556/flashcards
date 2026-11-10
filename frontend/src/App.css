@@ -1,0 +1,8 @@
+main {
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+    gap: 10em;
+    align-items: center;
+    text-align: center;
+}
