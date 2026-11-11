@@ -26,12 +26,12 @@ function Header() {
             />
           </>
         }
+        <ThemeToggle/>
         <Button
           onClick={() => navigate(routesConfig.home.path)}
           text="Home"
           category="blue"
         />
-        <ThemeToggle/>
       </div>
     </header>
   )

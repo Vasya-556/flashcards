@@ -1,9 +1,27 @@
 .container {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+    gap: 1em;
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header h1 {
+    width: 100%;
+    text-align: center;
+}
+
+.content {
+    display: flex;
     gap: 1em;
     flex-wrap: wrap;
-    max-width: calc(17em * 5 + 1em);
-    padding: 1em;
     justify-content: center;
 }
 
@@ -75,4 +93,34 @@
 
 .actions button:last-child {
     width: 30%;
+}
+
+@media only screen and (min-width: 19em) {
+    .content {
+        max-width: calc((var(--card-width) + 1em) * 1 + 1em);
+    }
+}
+
+@media only screen and (min-width: 37em) {
+    .content {
+        max-width: calc((var(--card-width) + 1em) * 2 + 1em);
+    }
+}
+
+@media only screen and (min-width: 54em) {
+    .content {
+        max-width: calc((var(--card-width) + 1em) * 3 + 1em);
+    }
+}
+
+@media only screen and (min-width: 71em) {
+    .content {
+        max-width: calc((var(--card-width) + 1em) * 4 + 1em);
+    }
+}
+
+@media only screen and (min-width: 88em) {
+    .content {
+        max-width: calc((var(--card-width) + 1em) * 5 + 1em);
+    }
 }

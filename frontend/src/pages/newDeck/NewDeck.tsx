@@ -8,12 +8,26 @@ import Input from "../../components/input/Input";
 
 function NewDeck() {
   const [name, setName] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
   const navigate = useNavigate();
 
   const handleCreateDeck = async (e?: React.BaseSyntheticEvent) => {
     e?.preventDefault();
-    await deckServices.createDeck(name);
-    navigate(routesConfig.home.path);
+    try {
+      await deckServices.createDeck(name);
+      navigate(routesConfig.home.path);
+    }
+    catch {
+      setMessageText("Deck was NOT created");
+    }
+  }
+
+  const setMessageText = (text: string) => {
+    setMessage(text);
+
+    setTimeout(() => {
+      setMessage("");
+    }, 5000);
   }
 
   return (
@@ -34,6 +48,7 @@ function NewDeck() {
           text="Create deck"
         />
       </form>
+      {message && <h1>{message}</h1>}
     </div>
   )
 }

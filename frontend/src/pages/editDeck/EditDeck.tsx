@@ -27,26 +27,86 @@ function EditDeck() {
   const [cards, setCards] = useState<{_id: string, front: string, back: string, alwaysShowFront: boolean, progress: number}[]| null>(null);
   const [editCard, setEditCard] = useState<string[]>([]);
   const [reload, setReload] = useState(false);
+  const [message, setMessage] = useState<string>("");
   const navigate = useNavigate();
+
+  const setMessageText = (text: string) => {
+    setMessage(text);
+
+    setTimeout(() => {
+      setMessage("");
+    }, 5000);
+  }
 
   const handleUpdateDeck = async (e?: React.BaseSyntheticEvent) => {
     e?.preventDefault();
 
-    await deckServices.updateDeck(deckId, name);
+    try {
+      await deckServices.updateDeck(deckId, name);
+      setMessageText("Deck name was updated");
+    }
+    catch {
+      setMessageText("Deck name was NOT updated");
+    }
   };
 
   const handleDeleteDeck = async (e?: React.BaseSyntheticEvent) => {
     e?.preventDefault();
 
-    await deckServices.deleteDeck(deckId);
+    try {
+      await deckServices.deleteDeck(deckId);
+      setMessageText("Deck name was updated");
+      navigate(routesConfig.home.path);
+    }
+    catch {
+      setMessageText("Deck name was NOT deleted");
+    }
   };
 
   const handleDeleteCard = async (cardId: string, e?: React.BaseSyntheticEvent) => {
     e?.preventDefault();
 
-    await cardServices.deleteCard(deckId, cardId);
-    setReload(current => !current);
+    try {
+      await cardServices.deleteCard(deckId, cardId);
+      setReload(current => !current);
+      setMessageText("Card was deleted");
+    }
+    catch {
+      setMessageText("Card was NOT deleted");
+    }
   };
+
+  const toggleEditCard = (cardId: string) => {
+    setEditCard(
+      current => 
+      current.includes(cardId)
+        ? current.filter(id => id !== cardId)
+        : [...current, cardId]
+    )
+  }
+
+  const handleCreateCard = () => {
+    try {
+      formRef.current?.requestSubmit();
+      setMessageText("Card was created");
+    }
+    catch {
+      setMessageText("Card was NOT created");
+    }
+  }
+
+  const handleEditCard = (cardId: string, e?: React.BaseSyntheticEvent) => {
+    e?.preventDefault();
+
+    try {
+      setReload(current => !current);
+      toggleEditCard(cardId);
+      setMessageText("Card was created");
+    }
+    catch {
+      setMessageText("Card was NOT created");
+    }
+  }
 
   useEffect(() => {
     const loadDeckName = async () => {
@@ -72,19 +132,6 @@ function EditDeck() {
     loadCards();
     loadDeckName();
   }, [reload, deckId]);
-
-  const toggleEditCard = (cardId: string) => {
-    setEditCard(
-      current => 
-      current.includes(cardId)
-        ? current.filter(id => id !== cardId)
-        : [...current, cardId]
-    )
-  }
-
-  const handleCreateCard = () => {
-    formRef.current?.requestSubmit();
-  }
 
   return (
     <div className={styles.container}>
@@ -127,6 +174,7 @@ function EditDeck() {
           </div>
         </div>
       </div>
+      {message && <h1>{message}</h1>}
       <div className={styles.cards}>
         {
           cards && cards.length > 0 ? cards.map((card, index) => (
@@ -150,10 +198,7 @@ function EditDeck() {
                   <EditCard 
                     deckId={deckId} 
                     cardId={card._id} 
-                    onCardEdit={() => {
-                      setReload(current => !current);
-                      toggleEditCard(card._id);
-                    }}
+                    onCardEdit={() => handleEditCard(card._id)}
                     initialFront={card.front}
                     initialBack={card.back}
                     initialAlwaysShowFront={card.alwaysShowFront}
