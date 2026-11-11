@@ -11,14 +11,14 @@ import { useEffect } from "react";
 import { authServices } from "./services";
 
 function App() {
-  const auth = useAuth();
+  const setAuth = useAuth((state) => state.setAuth);
 
   useEffect(() => {
     const setUser = async() => {
       try {
         const user = await authServices.me();
         if (user !== null) {
-          auth.setAuth(user);
+          setAuth(user);
         }
       }
       catch (error) {
@@ -27,7 +27,7 @@ function App() {
     }
     
     setUser();
-  }, [auth])
+  }, [setAuth])
 
   return <div>
     <HashRouter>
