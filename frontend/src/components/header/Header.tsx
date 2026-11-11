@@ -4,6 +4,7 @@ import { routesConfig } from "../../configs";
 import { Logout } from "../.";
 import { useAuth } from "../../hooks";
 import Button from "../button/Button";
+import ThemeToggle from "../themeToggle/ThemeToggle";
 
 function Header() {
   const navigate = useNavigate();
@@ -11,11 +12,6 @@ function Header() {
   return (
     <header className={styles.container}>
       <div className={styles.content}>
-        <Button
-          onClick={() => navigate(routesConfig.home.path)}
-          text="Home"
-          category="blue"
-        />
         {
           auth.auth ?
           <>
@@ -30,6 +26,12 @@ function Header() {
             />
           </>
         }
+        <Button
+          onClick={() => navigate(routesConfig.home.path)}
+          text="Home"
+          category="blue"
+        />
+        <ThemeToggle/>
       </div>
     </header>
   )
