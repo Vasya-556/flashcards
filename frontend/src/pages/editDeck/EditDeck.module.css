@@ -2,6 +2,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+    gap: 1em;
 }
 
 .header {
@@ -42,6 +44,7 @@
 
 .cards {
     display: flex;
+    justify-content: center;
     flex-wrap: wrap;
     gap: 1em;
     max-width: calc(17em * 5 + 1em);
