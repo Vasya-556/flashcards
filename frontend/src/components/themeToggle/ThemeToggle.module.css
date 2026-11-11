@@ -1,0 +1,41 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+}
+
+.switch {
+    cursor: pointer;
+    position: relative;
+    background-color: #f8fb6e;
+    transition: 0.5s;
+    border-radius: 50%;
+    width: var(--theme-toggle);
+    height: var(--theme-toggle);
+    overflow: hidden;
+}
+
+.switch::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    width: var(--theme-toggle);
+    height: var(--theme-toggle);
+}
+
+.switch:has(.toggle:checked) {
+    background-color: #c1ada8;
+}
+
+.switch:has(.toggle:checked)::after {
+    background-color: #c1ada8;
+    left: calc(var(--theme-toggle)/3);
+    background-color: var(--color-element);
+    transition: 0.5s;
+}
+
+.toggle {
+    appearance: none;
+}

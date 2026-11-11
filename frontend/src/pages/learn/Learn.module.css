@@ -1,7 +1,7 @@
 .container {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: start;
     flex-direction: column;
     gap: 1em;
     padding: 1em;
@@ -73,4 +73,21 @@
 .card button:hover {
     transform: none;
     filter: brightness(1.2);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    overflow: hidden;
+}
+
+.header button, .header span {
+    width: 5em;
+}
+
+.header span {
+    color: var(--color-purple);
+    overflow: hidden;
 }

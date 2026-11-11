@@ -87,7 +87,9 @@ function Learn() {
   }, [deckId, reload]);
 
   const handleFlip = () => {
-    const isShowingFront = !flipped ? true : showFront;
+    const isShowingFront = !flipped
+      ? cards?.[0].alwaysShowFront || showFront
+      : showFront;
 
     setFlipped(true);
     setShowFront(!isShowingFront);
@@ -95,11 +97,23 @@ function Learn() {
 
   return (
     <div className={styles.container}>
-      <Button
-        onClick={() => navigate(generatePath(routesConfig.editDeck.path, { id: deckId}))}
-        category="blue"
-        text="Edit deck"
-      />
+      <div className={styles.header}>
+        <Button
+          onClick={() => navigate(-1)}
+          category="blue"
+          text="Back"
+        />
+        <Button
+          onClick={() => navigate(generatePath(routesConfig.editDeck.path, { id: deckId}))}
+          category="blue"
+          text="Edit"
+        />
+        {
+          cards
+          ? <span>{cards.length}</span>
+          : <span>0</span>
+        }
+      </div>
       {
         cards && cards.length > 0
         ? <div className={styles.card}>
