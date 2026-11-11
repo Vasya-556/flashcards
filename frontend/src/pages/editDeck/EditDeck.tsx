@@ -14,7 +14,8 @@ import {
   useRef,
  } from "react";
 import { routesConfig } from "../../configs";
-import { EditCard, NewCard } from "../../components";
+import EditCard from "../../components/editCard/EditCard";
+import NewCard from "../../components/newCard/NewCard";
 import Button from "../../components/button/Button";
 import Input from "../../components/input/Input";
 

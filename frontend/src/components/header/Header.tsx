@@ -1,10 +1,10 @@
 import styles from "./Header.module.css";
 import { useNavigate } from "react-router-dom";
 import { routesConfig } from "../../configs";
-import { Logout } from "../.";
 import { useAuth } from "../../hooks";
 import Button from "../button/Button";
 import ThemeToggle from "../themeToggle/ThemeToggle";
+import Logout from "../logout/Logout";
 
 function Header() {
   const navigate = useNavigate();

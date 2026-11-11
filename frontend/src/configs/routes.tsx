@@ -1,11 +1,11 @@
-import {
-  Home,
-  Learn,
-  Login,
-  NewDeck,
-  EditDeck,
-  NotFound,
-} from "../pages";
+import { lazy } from "react";
+
+const Home = lazy(() => import("../pages/home/Home"));
+const Learn = lazy(() => import("../pages/learn/Learn"));
+const Login = lazy(() => import("../pages/login/Login"));
+const NewDeck = lazy(() => import("../pages/newDeck/NewDeck"));
+const EditDeck = lazy(() => import("../pages/editDeck/EditDeck"));
+const NotFound = lazy(() => import("../pages/notFound/NotFound"));
 
 const routesConfig = {
   home: { path: "/", element: <Home/>},
