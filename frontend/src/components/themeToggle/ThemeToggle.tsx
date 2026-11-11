@@ -25,6 +25,7 @@ function ThemeToggle() {
     <div className={styles.container}>
       <label
         className={styles.switch}
+        aria-label='Theme toggle'
       >
         <input
           onChange={toggleTheme}

@@ -12,6 +12,7 @@
     cursor: pointer;
     transition: transform 0.2s ease filter 0.2s ease;
     transform-origin: center;
+    color: var(--color-font);
 }
 
 .container:hover {

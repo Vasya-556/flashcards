@@ -4,11 +4,17 @@ import {
   Routes,
   Route
  } from "react-router-dom";
-import { Header } from "./components";
 import { routesConfig } from "./configs";
 import { useAuth } from "./hooks";
 import { useEffect } from "react";
 import { authServices } from "./services";
+import { 
+  Suspense,
+  lazy,
+ } from "react";
+
+const Header = lazy(() => import("./components/header/Header"));
+const LoadingFallback = lazy(() => import("./components/loadingFallback/LoadingFallback"));
 
 function App() {
   const setAuth = useAuth((state) => state.setAuth);
@@ -31,7 +37,10 @@ function App() {
 
   return <div>
     <HashRouter>
-      <Header/>
+      <Suspense
+      fallback={<LoadingFallback/>}>
+        <Header/>
+      </Suspense>
       <main>
         <Routes>
           {
@@ -39,7 +48,12 @@ function App() {
               <Route
                 key={index}
                 path={path}
-                element={element}
+                element={
+                  <Suspense
+                    fallback={<LoadingFallback/>}>
+                    {element}
+                  </Suspense>
+                }
               />
             ))
           }

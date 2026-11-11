@@ -3,7 +3,11 @@ import { GoogleLogin } from '@react-oauth/google';
 import { authServices } from "../../services";
 import { useAuth } from "../../hooks";
 import { useNavigate } from "react-router-dom";
-import { routesConfig } from "../../configs";
+import { 
+  routesConfig,
+  authConfig
+ } from "../../configs";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 function Login() {
   const auth = useAuth();
@@ -27,13 +31,18 @@ function Login() {
   
   return (
     <div className={styles.container}>
-      <GoogleLogin
-        onSuccess={handleLogin}
-        onError={handleError}
-        theme="filled_black"
-        size="medium"
-        shape="rectangular"
-      />
+      <GoogleOAuthProvider 
+        clientId={authConfig.googleClientId}
+        locale="en"
+        >
+        <GoogleLogin
+          onSuccess={handleLogin}
+          onError={handleError}
+          theme="filled_black"
+          size="medium"
+          shape="rectangular"
+        />
+      </GoogleOAuthProvider>
     </div>
   )
 }

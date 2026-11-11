@@ -1,0 +1,60 @@
+{
+  "scanId": "d95fab86-19de-4a59-8e6f-f6e0b81d2c04",
+  "site": "http://localhost:5173/flashcards/",
+  "device": "mobile",
+  "status": "complete",
+  "startedAt": "2026-11-11T16:54:38.449Z",
+  "completedAt": "2026-11-11T16:54:58.709Z",
+  "summary": {
+    "routes": 1,
+    "completed": 1,
+    "failed": 0,
+    "scoreAverage": 0.95,
+    "scoresByCategory": {
+      "performance": 1,
+      "accessibility": 0.94,
+      "seo": 0.9,
+      "best-practices": 0.96,
+      "agentic-browsing": 1
+    },
+    "categoryScoreDisplayModes": {
+      "performance": "gauge",
+      "accessibility": "gauge",
+      "seo": "gauge",
+      "best-practices": "gauge",
+      "agentic-browsing": "fraction"
+    },
+    "durationMs": 20051,
+    "devices": [
+      "mobile"
+    ],
+    "scoresByDevice": {
+      "mobile": {
+        "scoreAverage": 0.95,
+        "scoresByCategory": {
+          "performance": 1,
+          "accessibility": 0.94,
+          "seo": 0.9,
+          "best-practices": 0.96,
+          "agentic-browsing": 1
+        },
+        "categoryScoreDisplayModes": {
+          "performance": "gauge",
+          "accessibility": "gauge",
+          "seo": "gauge",
+          "best-practices": "gauge",
+          "agentic-browsing": "fraction"
+        }
+      }
+    }
+  },
+  "routes": [
+    {
+      "path": "/flashcards",
+      "url": "http://localhost:5173/flashcards",
+      "score": 1,
+      "lhrBlobKey": "scans/d95fab86-19de-4a59-8e6f-f6e0b81d2c04/lhr/bf1b00c8f0f9ff13-mobile.json.gz",
+      "reportBlobKey": "scans/d95fab86-19de-4a59-8e6f-f6e0b81d2c04/reports/bf1b00c8f0f9ff13-mobile.json"
+    }
+  ]
+}

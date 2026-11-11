@@ -2,6 +2,7 @@
   font-family: "Nunito";
   font-weight: 400;
   src: url("/fonts/Nunito-Regular.woff2") format("woff2");
+  font-display: swap;
 }
 
 :root {
@@ -19,7 +20,7 @@
   --color-purple: #a47de8;
   --color-red: #ed5a48;
   --color-green: #3ed471;
-  --color-blue: #7690b1;
+  --color-blue: #526D90;
   --color-font: #e9edf6;
   --color-border: #393f49;
 }
@@ -28,9 +29,9 @@
   --color-background: #eef0f7;
   --color-element: #d8dfe9;
   --color-purple: #3e1782;
-  --color-red: #b52512;
+  --color-red: #E83018;
   --color-green: #2ac05c;
-  --color-blue: #4e6788;
+  --color-blue: #5E7CA3;
   --color-font: #090d16;
   --color-border: #b8bdc7;
 }
