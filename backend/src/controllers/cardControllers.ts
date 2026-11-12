@@ -1,5 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { cardServices } from "../services/index.js";
+import { cardTypes } from "../types/index.js";
+import fs from "fs/promises";
 
 const getCard = async(req: Request, res: Response, next: NextFunction) => {
     const userId = req.session.userId;
@@ -207,6 +209,85 @@ const deleteCard = async(req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+const isRecord = (value: unknown): boolean => {
+    return typeof value === "object" && value !== null;
+}
+
+const validateCards = (value: unknown): value is cardTypes.ImporCard[] => {
+    if (!isRecord(value)) {
+        return false;
+    }
+
+    if (!Array.isArray(value)) {
+        return false;
+    }
+
+    return value.every((card, index) => {
+        if (!isRecord(card)){
+            return false;
+        }
+
+        const front = card.front;
+        const back = card.back;
+        const alwaysShowFront = card.alwaysShowFront;
+        const progress = card.progress;
+
+        if (typeof front !== "string"
+            || typeof back !== "string"
+            || (typeof alwaysShowFront !== "undefined" && typeof alwaysShowFront !== "boolean")
+            || (typeof progress !== "undefined" && 
+                (typeof progress !== "number" 
+                    || !Number.isFinite(progress)
+                    || progress < 0
+                    || progress > 100))) {
+            return false;
+        }
+        return true;
+    });
+}
+
+const importCards = async(req: Request, res: Response, next: NextFunction) => {
+    const userId = req.session.userId;
+    const deckId = req.params.deckId;
+
+    if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    if (!deckId || typeof deckId !== "string") {
+        return res.status(401).json({ message: "Deck id was not provided" });
+    }
+
+    if (!req.file){
+        return res.status(400).json({ message: "File was not provided" });
+    }
+
+    try {
+        const fileContent = await fs.readFile(req.file.path, "utf-8");
+        const data = JSON.parse(fileContent);
+
+        if (!validateCards(data)){
+            return res.status(400).json({ message: "Invalid JSON structure" });
+        }
+
+        const card = await cardServices.importCards(userId, deckId, data);
+
+        if (!card){
+            return res.status(404).json({ message: "Cards were not imported"});
+        }
+        
+        return res.status(200).json({ message: "Card were imported"});
+    }
+    catch(error) {
+        next(error)
+    }
+    finally {
+        if (req.file){
+            await fs.unlink(req.file.path).catch(error => next(error))
+        }
+    }
+}
+
 export {
     getCard,
     getCards,
@@ -216,4 +297,5 @@ export {
     increaseProgress,
     decreaseProgress,
     deleteCard,
+    importCards,
 }
