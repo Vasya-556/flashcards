@@ -2,6 +2,7 @@ import {
     cardModel,
     deckModel
  } from "../models/index.js";
+import { cardTypes } from "../types/index.js";
 
 const getCard = async(
     userId: string,
@@ -118,6 +119,29 @@ const deleteCard = async(
     return card;
 }
 
+const importCards = async(
+    userId: string,
+    deckId: string,
+    data: cardTypes.ImporCard[],
+) => {
+    const deck = await deckModel.Deck.findOne({ _id: deckId, owner: userId });
+
+    if (!deck) {
+        return null;
+    }
+
+    const cards = data.map(item => ({
+        front: item.front,
+        back: item.back,
+        alwaysShowFront: item.alwaysShowFront,
+        progress: item.progress,
+        deck: deck._id,
+    }));
+
+    const result = await cardModel.Card.insertMany(cards);
+    return result;
+}
+
 export {
     getCard,
     getCards,
@@ -125,4 +149,5 @@ export {
     patchCard,
     changeProgress,
     deleteCard,
+    importCards,
 }
