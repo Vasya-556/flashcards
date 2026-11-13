@@ -54,6 +54,17 @@ const deleteCard = (deckId: string, cardId: string) => {
     });
 };
 
+const importCards = (deckId: string, data: File) => {
+    const formData = new FormData();
+    formData.append("cards", data);
+
+    return fetchAPI({
+        url: `${baseUrl}/${deckId}/import`,
+        method: "post",
+        body: formData,
+    })
+}
+
 export {
     getCard,
     getCards,
@@ -61,5 +72,6 @@ export {
     updateCard,
     increaseProgress,
     decreaseProgress,
-    deleteCard
+    deleteCard,
+    importCards,
 };
