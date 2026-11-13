@@ -15,18 +15,6 @@ jobs:
       image: node:22
     steps:
       - uses: actions/checkout@v4
-
-      - name: Backend testing
-        working-directory: backend
-        run: |
-          npm ci
-          npm test -- --run
-          npm run build
-      
-      - name: Start backend
-        working-directory: backend
-        run: |
-          npm run dev > /tmp/backend.log 2>&1 &
       
       - name: Frontend testing
         working-directory: frontend

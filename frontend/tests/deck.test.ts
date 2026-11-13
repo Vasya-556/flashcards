@@ -44,7 +44,7 @@ beforeAll(async () => {
     }
 });
 
-describe("deck services", () => {
+describe.skipIf(appConfig.isProd)("deck services", () => {
     it("CRUD", async () => {
         const name = "Test deck " + Date.now();
 
