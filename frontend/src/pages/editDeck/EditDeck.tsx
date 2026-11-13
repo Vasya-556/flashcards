@@ -108,6 +108,26 @@ function EditDeck() {
     }
   }
 
+  const handleImportCards = async (e?: React.BaseSyntheticEvent) => {
+    e?.preventDefault();
+
+    const data = (e?.target as HTMLInputElement)?.files?.[0];
+
+    if (!data) {
+      setMessageText("Select JSON file");
+      return
+    }
+
+    try {
+      await cardServices.importCards(deckId, data);
+      setReload(current => !current);
+      setMessageText("Cards were inserted");
+    }
+    catch {
+      setMessageText("Cards were NOT inserted");
+    }
+  }
+
   useEffect(() => {
     const loadDeckName = async () => {
       try{
@@ -165,6 +185,12 @@ function EditDeck() {
               onClick={handleCreateCard}
               category="green"
               text="Create card"
+            />
+            <Input
+              label="Import cards"
+              category="file"
+              onChange={handleImportCards}
+              accept=".json,application/json"
             />
             <Button
               onClick={() => navigate(generatePath(routesConfig.learn.path, { id: deckId}))}

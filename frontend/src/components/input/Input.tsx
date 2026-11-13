@@ -2,7 +2,7 @@ import styles from "./Input.module.css";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string,
-  category: "default" | "checkbox",
+  category: "default" | "checkbox" | "file",
   labelProps?: React.LabelHTMLAttributes<HTMLLabelElement>,
 }
 
@@ -16,7 +16,7 @@ function Input({ label, category, labelProps, ...inputProps}: InputProps) {
           type={
             category === "default"
             ? "text"
-            : "checkbox"
+            : category
           }
         >
         </input>

@@ -4,7 +4,7 @@ import { AppError } from "../utils/index";
 type args = {
     url: string,
     method: "post" | "get" | "put" | "PATCH" | "delete";
-    body?: Record<string, unknown>;
+    body?: Record<string, unknown> | FormData;
 }
 
 const fetchAPI = async (args: args) => {
@@ -12,12 +12,14 @@ const fetchAPI = async (args: args) => {
     try {
         response = await fetch(`${appConfig.backendURL}${args.url}`, {
             method: args.method,
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: args.body === undefined
+            headers: args.body instanceof FormData
                 ? undefined
-                : JSON.stringify(args.body),
+                : {"Content-Type": "application/json"},
+            body: args.body instanceof FormData
+                ? args.body
+                : args.body === undefined
+                    ? undefined
+                    : JSON.stringify(args.body),
             credentials: "include",
         })
     }
