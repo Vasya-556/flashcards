@@ -23,19 +23,21 @@ const corsOptions = {
     credentials: true,
 }
 
+const mongoStore = MongoStore.create({
+    mongoUrl: dbConfig.url,
+    cryptoAdapter: createWebCryptoAdapter({
+        secret: authConfig.secret,
+    }),
+    dbName: dbConfig.name,
+    touchAfter: authConfig.touchAfter,
+})
+
 const sessionStore = session({
     name: appConfig.isProd ? "__Host-Http-session" : "session",
     secret: authConfig.secret,
     saveUninitialized: false,
     resave: false,
-    store: MongoStore.create({
-        mongoUrl: dbConfig.url,
-        cryptoAdapter: createWebCryptoAdapter({
-            secret: authConfig.secret,
-        }),
-        dbName: dbConfig.name,
-        touchAfter: authConfig.touchAfter,
-    }),
+    store: mongoStore,
     cookie: {
         secure: appConfig.isProd,
         httpOnly: true,
@@ -68,5 +70,6 @@ app.use("/auth", authRoutes.router);
 app.use(errorMiddleware.errorHandler);
 
 export {
-    app
+    app,
+    mongoStore,
 }

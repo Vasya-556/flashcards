@@ -1,4 +1,7 @@
-import { app } from "./app.js";
+import { 
+    app, 
+    mongoStore 
+} from "./app.js";
 import { appConfig } from "./configs/index.js";
 import { db } from "./models/index.js";
 
@@ -33,7 +36,8 @@ const shutDown = async (signal: string, exitCode: number = 0) => {
                 resolve();
             });
             server.closeIdleConnections();
-        })
+        });
+        await mongoStore.close();
     }
     catch (error){
         console.error("Error closing HTTP server:", error);
