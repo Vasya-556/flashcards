@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-BX5dh3L7.js";var t={container:`_container_1m91d_1`},n=e();function r({label:e,category:r,labelProps:i,...a}){return(0,n.jsx)(`div`,{className:t.container,children:(0,n.jsxs)(`label`,{...i,children:[e,(0,n.jsx)(`input`,{...a,type:r==="default"?`text`:r})]})})}export{r as t};

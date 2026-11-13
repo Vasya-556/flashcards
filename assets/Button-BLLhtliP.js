@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-BX5dh3L7.js";var t={container:`_container_5riyb_1`,blue:`_blue_5riyb_23`,green:`_green_5riyb_31`,red:`_red_5riyb_39`},n=e();function r({text:e,category:r,...i}){return(0,n.jsx)(`button`,{className:`${t.container} ${t[r]}`,...i,children:e})}export{r as t};
