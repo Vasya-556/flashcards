@@ -10,7 +10,7 @@ jobs:
   ci:
     permissions:
       contents: write
-    runs-on: ubuntu-lates
+    runs-on: ubuntu-latest
     container:
       image: node:22
     steps:
