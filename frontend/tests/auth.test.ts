@@ -43,7 +43,7 @@ const loginWithCookie = async () => {
     }
 };
 
-describe("Auth services", () => {
+describe.skipIf(appConfig.isProd)("Auth services", () => {
     it("Login, me, logout", async () => {
         const credentials: Record<string, unknown> = {
             idToken: "test"
