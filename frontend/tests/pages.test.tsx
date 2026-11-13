@@ -6,14 +6,6 @@ import {
     beforeEach,
  } from "vitest";
 import { 
-    EditDeck,
-    Home,
-    Learn,
-    Login,
-    NewDeck,
-    NotFound
- } from "../src/pages";
-import { 
     createRoot,
     Root
  } from "react-dom/client";
@@ -25,6 +17,13 @@ import {
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { authConfig } from "../src/configs";
+
+import EditDeck from "../src/pages/editDeck/EditDeck";
+import Home from "../src/pages/home/Home";
+import Learn from "../src/pages/learn/Learn";
+import Login from "../src/pages/login/Login";
+import NewDeck from "../src/pages/newDeck/NewDeck";
+import NotFound from "../src/pages/notFound/NotFound";
 
 let container: HTMLDivElement;
 let root: Root;
@@ -86,7 +85,7 @@ describe("Render pages", () => {
         });
 
         await waitFor(() => {
-            expect(container.querySelector("a")).not.toBeNull();
+            expect(container.querySelector("button")).not.toBeNull();
         });
     });
 
@@ -96,9 +95,11 @@ describe("Render pages", () => {
                 <GoogleOAuthProvider 
                     clientId={authConfig.googleClientId}
                 >
-                    <Login/>
+                    <MemoryRouter>
+                        <Login/>
+                    </MemoryRouter>
                 </GoogleOAuthProvider>
-            )
+            );
         });
 
         await waitFor(() => {
@@ -108,7 +109,11 @@ describe("Render pages", () => {
 
     it("New deck", async () => {
         await act(async () => {
-            root.render(<NewDeck/>)
+            root.render(
+                <MemoryRouter>
+                    <NewDeck/>
+                </MemoryRouter>
+            );
         });
 
         await waitFor(() => {
@@ -118,7 +123,11 @@ describe("Render pages", () => {
 
     it("Not found", async () => {
         await act(async () => {
-            root.render(<NotFound/>)
+            root.render(
+                <MemoryRouter>
+                    <NotFound/>
+                </MemoryRouter>
+            );
         });
 
         await waitFor(() => {
