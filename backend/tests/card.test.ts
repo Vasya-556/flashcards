@@ -9,6 +9,7 @@ import { cardServices, deckServices } from "../src/services/index.js";
 import { cardModel, deckModel } from "../src/models/index.js";
 import mongoose from "mongoose";
 import { db } from "../src/models/index.js";
+import type { cardTypes } from "../src/types/index.js";
 
 const userId = new mongoose.Types.ObjectId().toString();
 let deckId: string;
@@ -49,118 +50,199 @@ const getCardId = async (): Promise<string> => {
 }
 
 describe("Cards", () => {
-    it("Create a card", async () => {
-        const card = await cardServices.postCard(userId, deckId, cardData);
+    describe("Postive", () => {
+        it("Create a card", async () => {
+            const card = await cardServices.postCard(userId, deckId, cardData);
 
-        expect(card?.front).toBe(cardData.front);
+            expect(card?.front).toBe(cardData.front);
+        });
+
+        it("Get a card", async () => {
+            const cardId = await getCardId();
+            const card = await cardServices.getCard(userId, deckId, cardId);
+
+            expect(card?._id.toString()).toBe(cardId);
+        });
+
+        it("Get all cards", async () => {
+            const cards = await cardServices.getCards(userId, deckId);
+
+            expect(Array.isArray(cards)).toBe(true);
+            expect(cards).not.toBeNull();
+        });
+
+        it("Update a card", async () => {
+            const cardId = await getCardId();
+
+            const updated = await cardServices.patchCard(userId, deckId, cardId, updatedCardData);
+            expect(updated?.front).toBe(updatedCardData.front);
+        });
+
+        it("Delete a card", async () => {
+            const cardId = await getCardId();
+
+            const deleted = await cardServices.deleteCard(userId, deckId, cardId);
+
+            expect(deleted?._id.toString()).toBe(cardId);
+            expect(await cardServices.getCard(userId, deckId, cardId)).toBeNull();
+        });
+
+        it("Change progress", async () => {
+            const cardId = await getCardId();
+
+            await cardServices.changeProgress(userId, deckId, cardId, 1);
+            let card = await cardServices.getCard(userId, deckId, cardId);
+
+            expect(card?.progress).toBe(1);
+
+            await cardServices.changeProgress(userId, deckId, cardId, -1);
+            card = await cardServices.getCard(userId, deckId, cardId);
+
+            expect(card?.progress).toBe(0);
+        });
+
+        it("Import cards", async () => {
+            const data: cardTypes.ImporCard[] = [
+                {
+                    front: "Front 1",
+                    back: "Back 1",
+                },
+                {
+                    front: "Front 2",
+                    back: "Back 2",
+                    alwaysShowFront: true,
+                    progress: 50
+                }
+            ]
+
+            await cardServices.importCards(userId, deckId, data);
+            const cards = await cardServices.getCards(userId, deckId);
+            
+            for (const item of data) {
+                expect(cards).toEqual(
+                    expect.arrayContaining([
+                        expect.objectContaining(item)
+                    ])
+                )
+            };
+        });
     });
 
-    it("Get a card", async () => {
-        const cardId = await getCardId();
-        const card = await cardServices.getCard(userId, deckId, cardId);
+    describe("Negative", () => {
+        it("Get a card with incorrect card id", async () => {
+            const card = await cardServices.getCard(userId, deckId, nonExistingId);
 
-        expect(card?._id.toString()).toBe(cardId);
-    });
+            expect(card).toBeNull();
+        });
 
-    it("Get a card with incorrect card id", async () => {
-        const card = await cardServices.getCard(userId, deckId, nonExistingId);
+        it("Get a card with incorrect deck id", async () => {
+            const cardId = await getCardId();
 
-        expect(card).toBeNull();
-    });
+            const card = await cardServices.getCard(userId, nonExistingId, cardId);
+            
+            expect(card).toBeNull();
+        });
 
-    it("Get a card with incorrect deck id", async () => {
-        const cardId = await getCardId();
+        it("Get a card with incorrect user id", async () => {
+            const cardId = await getCardId();
 
-        const card = await cardServices.getCard(userId, nonExistingId, cardId);
-        
-        expect(card).toBeNull();
-    });
+            const card = await cardServices.getCard(nonExistingId, deckId, cardId);
+            
+            expect(card).toBeNull();
+        });
 
-    it("Get a card with incorrect user id", async () => {
-        const cardId = await getCardId();
+        it("Update a card with incorrect card id", async () => {
+            const updated = await cardServices.patchCard(userId, deckId, nonExistingId, updatedCardData);
+            expect(updated).toBeNull();
+        });
 
-        const card = await cardServices.getCard(nonExistingId, deckId, cardId);
-        
-        expect(card).toBeNull();
-    });
+        it("Update a card with incorrect deck id", async () => {
+            const cardId = await getCardId();
 
-    it("Get all cards", async () => {
-        const cards = await cardServices.getCards(userId, deckId);
+            const updated = await cardServices.patchCard(userId, nonExistingId, cardId, updatedCardData);
+            expect(updated).toBeNull();
+        });
 
-        expect(Array.isArray(cards)).toBe(true);
-        expect(cards).not.toBeNull();
-    });
+        it("Update a card with incorrect user id", async () => {
+            const cardId = await getCardId();
 
-    it("Update a card", async () => {
-        const cardId = await getCardId();
+            const updated = await cardServices.patchCard(nonExistingId, deckId, cardId, updatedCardData);
+            expect(updated).toBeNull();
+        });
 
-        const updated = await cardServices.patchCard(userId, deckId, cardId, updatedCardData);
-        expect(updated?.front).toBe(updatedCardData.front);
-    });
+        it("Delete a card with incorrect card id", async () => {
+            const cardId = await getCardId();
 
-    it("Update a card with incorrect card id", async () => {
-        const updated = await cardServices.patchCard(userId, deckId, nonExistingId, updatedCardData);
-        expect(updated).toBeNull();
-    });
+            const deleted = await cardServices.deleteCard(userId, deckId, nonExistingId);
 
-    it("Update a card with incorrect deck id", async () => {
-        const cardId = await getCardId();
+            expect(deleted).toBeNull();
+        });
 
-        const updated = await cardServices.patchCard(userId, nonExistingId, cardId, updatedCardData);
-        expect(updated).toBeNull();
-    });
+        it("Delete a card with incorrect deck id", async () => {
+            const cardId = await getCardId();
 
-    it("Update a card with incorrect user id", async () => {
-        const cardId = await getCardId();
+            const deleted = await cardServices.deleteCard(userId, nonExistingId, cardId);
 
-        const updated = await cardServices.patchCard(nonExistingId, deckId, cardId, updatedCardData);
-        expect(updated).toBeNull();
-    });
+            expect(deleted).toBeNull();
+        });
 
-    it("Delete a card", async () => {
-        const cardId = await getCardId();
+        it("Delete a card with incorrect user id", async () => {
+            const cardId = await getCardId();
 
-        const deleted = await cardServices.deleteCard(userId, deckId, cardId);
+            const deleted = await cardServices.deleteCard(nonExistingId, deckId, cardId);
 
-        expect(deleted?._id.toString()).toBe(cardId);
-        expect(await cardServices.getCard(userId, deckId, cardId)).toBeNull();
-    });
+            expect(deleted).toBeNull();
+        });
 
-    it("Delete a card with incorrect card id", async () => {
-        const cardId = await getCardId();
+        it("Import cards with incorrect user id", async () => {
+            const data: cardTypes.ImporCard[] = [
+                {
+                    front: "Front 1",
+                    back: "Back 1",
+                },
+                {
+                    front: "Front 2",
+                    back: "Back 2",
+                    alwaysShowFront: true,
+                    progress: 50
+                }
+            ]
 
-        const deleted = await cardServices.deleteCard(userId, deckId, nonExistingId);
+            const imported = await cardServices.importCards(nonExistingId, deckId, data);
+            
+            expect(imported).toBeNull();
+        });
 
-        expect(deleted).toBeNull();
-    });
+        it("Import cards with incorrect deck id", async () => {
+            const data: cardTypes.ImporCard[] = [
+                {
+                    front: "Front 1",
+                    back: "Back 1",
+                },
+                {
+                    front: "Front 2",
+                    back: "Back 2",
+                    alwaysShowFront: true,
+                    progress: 50
+                }
+            ]
 
-    it("Delete a card with incorrect deck id", async () => {
-        const cardId = await getCardId();
+            const imported = await cardServices.importCards(userId, nonExistingId, data);
 
-        const deleted = await cardServices.deleteCard(userId, nonExistingId, cardId);
+            expect(imported).toBeNull();
+        });
 
-        expect(deleted).toBeNull();
-    });
+        it("Import cards with incorrect data", async () => {
+            const data = [
+                {
+                    front2: "Front 1",
+                    back1: "Back 1",
+                }
+            ]
 
-    it("Delete a card with incorrect user id", async () => {
-        const cardId = await getCardId();
-
-        const deleted = await cardServices.deleteCard(nonExistingId, deckId, cardId);
-
-        expect(deleted).toBeNull();
-    });
-
-    it("Change progress", async () => {
-        const cardId = await getCardId();
-
-        await cardServices.changeProgress(userId, deckId, cardId, 1);
-        let card = await cardServices.getCard(userId, deckId, cardId);
-
-        expect(card?.progress).toBe(1);
-
-        await cardServices.changeProgress(userId, deckId, cardId, -1);
-        card = await cardServices.getCard(userId, deckId, cardId);
-
-        expect(card?.progress).toBe(0);
+            await expect(
+                cardServices.importCards(userId, deckId, data as any)
+            ).rejects.toThrow();
+        });
     });
 });
