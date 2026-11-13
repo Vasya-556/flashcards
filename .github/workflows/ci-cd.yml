@@ -16,17 +16,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Backend testing
-        working-directory: backend
+      - name: Configure gh-pahes
         run: |
-          npm ci
-          npm test -- --run
-          npm run build
-      
-      - name: Start backend
-        working-directory: backend
-        run: |
-          npm run dev > /tmp/backend.log 2>&1 &
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
       
       - name: Frontend testing
         working-directory: frontend
@@ -34,7 +28,7 @@ jobs:
           npm ci
           npm test -- --run
       
-      - name: Frontend testing
+      - name: Frontend deploy
         working-directory: frontend
         run: |
           git remote set-url origin https://git:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
