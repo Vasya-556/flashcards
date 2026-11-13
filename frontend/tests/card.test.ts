@@ -45,7 +45,7 @@ beforeAll(async () => {
     }
 });
 
-describe("Card services", () => {
+describe.skipIf(appConfig.isProd)("Card services", () => {
     it("CRUD", async () => {
         const deckId = "123456789012345678901234";
         const front = "Front " + Date.now();
