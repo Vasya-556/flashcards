@@ -9,6 +9,10 @@ type AuthState = {
     csrfToken: string | null;
     setCsrfToken: (csrfToken: string) => void;
     removeCsrfToken: () => void;
+
+    isAuthChecked: boolean;
+    setIsAuthChecked: (isAuthChecked: boolean) => void;
+    removeIsAuthChecked: () => void;
 }
 
 const useAuth = create<AuthState>((set) => ({
@@ -18,7 +22,12 @@ const useAuth = create<AuthState>((set) => ({
 
     csrfToken: null,
     setCsrfToken: (csrfToken) => set({ csrfToken: csrfToken}),
-    removeCsrfToken: () => set({ csrfToken: null })
+    removeCsrfToken: () => set({ csrfToken: null }),
+
+    isAuthChecked: false,
+    setIsAuthChecked: (isAuthChecked) => set({ isAuthChecked: isAuthChecked }),
+    removeIsAuthChecked: () => set({ isAuthChecked: false }),
+
 }))
 
 export {

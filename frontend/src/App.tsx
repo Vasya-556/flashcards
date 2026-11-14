@@ -15,9 +15,12 @@ import {
 
 const Header = lazy(() => import("./components/header/Header"));
 const LoadingFallback = lazy(() => import("./components/loadingFallback/LoadingFallback"));
+const ProtectedRoute = lazy(() => import("./components/protectedRoute/ProtectedRoute"));
 
 function App() {
   const setAuth = useAuth((state) => state.setAuth);
+  const setIsAuthChecked = useAuth((state) => state.setIsAuthChecked);
+  const auth = useAuth();
 
   useEffect(() => {
     const setUser = async() => {
@@ -30,10 +33,13 @@ function App() {
       catch (error) {
         console.error(error);
       }
+      finally {
+        setIsAuthChecked(true);
+      }
     }
     
     setUser();
-  }, [setAuth])
+  }, [setAuth, setIsAuthChecked])
 
   return <div>
     <HashRouter>
@@ -42,22 +48,35 @@ function App() {
         <Header/>
       </Suspense>
       <main>
-        <Routes>
-          {
-            Object.values(routesConfig).map(({path, element}, index) => (
-              <Route
-                key={index}
-                path={path}
-                element={
-                  <Suspense
-                    fallback={<LoadingFallback/>}>
-                    {element}
-                  </Suspense>
-                }
-              />
-            ))
-          }
-        </Routes>
+        <Suspense
+          fallback={<LoadingFallback/>}>
+          <Routes>
+            {
+              Object.values(routesConfig).map(({path, element, isProtected}, index) => (
+                isProtected
+                ?
+                <Route 
+                  key={index}
+                  element={
+                    auth.isAuthChecked
+                    ? <ProtectedRoute/>
+                    : <LoadingFallback/>
+                  }>
+                  <Route
+                    path={path}
+                    element={element}
+                  />
+                </Route>
+                : 
+                <Route
+                  key={index}
+                  path={path}
+                  element={element}
+                />
+              ))
+            }
+          </Routes>
+        </Suspense>
       </main>
     </HashRouter>
   </div>;

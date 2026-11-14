@@ -22,6 +22,7 @@ function Home() {
           <DeckList/>
         </>
         : <>
+          <p>Backend may be down or sleeping, please wait a moment</p>
           <p>You're logged out. Please log in</p>
         </>
       }
