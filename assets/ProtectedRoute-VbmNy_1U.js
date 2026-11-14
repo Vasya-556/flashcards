@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-BX5dh3L7.js";import{n as t,r as n}from"./chunk-OB3PAWPO-BEEKX1w0.js";import{h as r}from"./index-BGeAZnBH.js";var i=e();function a(){return r().auth?(0,i.jsx)(n,{}):(0,i.jsx)(t,{to:`/`})}export{a as default};
