@@ -5,6 +5,7 @@ import {
     appConfig,
     authConfig,
     dbConfig,
+    csrfConfig,
  } from "./configs/index.js";
 import helmet from "helmet";
 import { errorMiddleware } from "./middlewares/index.js";
@@ -21,6 +22,7 @@ const app = express();
 const corsOptions = {
     origin: [appConfig.origin],
     credentials: true,
+    allowedHeaders: ["Content-Type", "X-CSRF-TOKEN"],
 }
 
 const mongoStore = MongoStore.create({
@@ -41,7 +43,7 @@ const sessionStore = session({
     cookie: {
         secure: appConfig.isProd,
         httpOnly: true,
-        sameSite: "lax",
+        sameSite: appConfig.isProd ? "none" : "lax",
         maxAge: authConfig.maxAge,
         path: "/",
     }
@@ -56,8 +58,9 @@ app.use(express.json({
     limit: "5mb"
 }));
 app.use(helmet());
-app.use(sessionStore)
+app.use(sessionStore);
 app.disable("x-powered-by");
+app.use(csrfConfig.csrfSynchronisedProtection);
 
 app.get("/health", (req: Request, res: Response) => {
     res.status(200).json({ message: "ok"})

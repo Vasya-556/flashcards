@@ -1,5 +1,9 @@
 import type { Request, Response, NextFunction } from "express";
 import { authServices } from "../services/index.js";
+import { 
+    appConfig, 
+    csrfConfig, 
+} from "../configs/index.js";
 
 const login = async(req: Request, res: Response, next: NextFunction) => {
     const { idToken } = req.body;
@@ -13,6 +17,7 @@ const login = async(req: Request, res: Response, next: NextFunction) => {
             return res.status(400).json({ error: "Google id was not found"});
         }
         req.session.userId = auth._id.toString();
+        csrfConfig.generateToken(req, true);
         req.session.save((error) => {
             if(error) {
                 return next(error)
@@ -23,7 +28,7 @@ const login = async(req: Request, res: Response, next: NextFunction) => {
     catch (error) {
         next(error);
     }
-}
+};
 
 const logout = async(req: Request, res: Response, next: NextFunction) => {
     try {
@@ -32,13 +37,13 @@ const logout = async(req: Request, res: Response, next: NextFunction) => {
                 return next(error)
             }
         });
-        res.clearCookie("session")
+        res.clearCookie(appConfig.isProd ? "__Host-Http-session" : "session")
         return res.status(200).json({ message: "User logged out" });
     }
     catch (error) {
         next(error);
     }
-}
+};
 
 const me = async(req: Request, res: Response, next: NextFunction) => {
     try {
@@ -54,10 +59,22 @@ const me = async(req: Request, res: Response, next: NextFunction) => {
     catch (error) {
         next(error);
     }
-}
+};
+
+const getCsrfToken = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.header("Cache-Control", "no-store");
+
+        return res.status(200).json({ csrfToken: csrfConfig.generateToken(req) });
+    }
+    catch (error) {
+        next(error);
+    }
+};
 
 export {
     login,
     logout,
-    me
+    me,
+    getCsrfToken,
 }
