@@ -1,5 +1,6 @@
 import { appConfig } from "../configs";
 import { AppError } from "../utils/index";
+import { useAuth } from "../stores";
 
 type args = {
     url: string,
@@ -8,13 +9,47 @@ type args = {
 }
 
 const fetchAPI = async (args: args) => {
+
+    let csrfToken = useAuth.getState().csrfToken;
+
+    if (args.method !== "get" && !csrfToken) {
+        try {
+            const csrfResponse = await fetch(`${appConfig.backendURL}/auth/csrf`, {
+                method: "get",
+                credentials: "include",
+            });
+            
+            const csrfMessage = await csrfResponse.json();
+
+            if (!csrfResponse.ok || typeof csrfMessage.csrfToken !== "string") {
+                throw new AppError.AppError("Unable to obtain CSRF token", csrfResponse.status);
+            }
+
+            useAuth.getState().setCsrfToken(csrfMessage.csrfToken);
+            csrfToken = useAuth.getState().csrfToken;
+        }
+        catch (error) {
+            if (error instanceof AppError.AppError){
+                throw error;
+            }
+            throw new AppError.AppError("Unable to connect to server");
+        }
+    }
+
     let response: Response;
     try {
         response = await fetch(`${appConfig.backendURL}${args.url}`, {
             method: args.method,
-            headers: args.body instanceof FormData
-                ? undefined
-                : {"Content-Type": "application/json"},
+            headers: {
+                ...(args.body instanceof FormData
+                    ? {}
+                    : {"Content-Type": "application/json"}
+                ),
+                ...(args.method !== "get" && csrfToken
+                    ? {"X-CSRF-TOKEN": csrfToken}
+                    : {}
+                ),
+            },
             body: args.body instanceof FormData
                 ? args.body
                 : args.body === undefined

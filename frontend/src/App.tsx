@@ -5,7 +5,7 @@ import {
   Route
  } from "react-router-dom";
 import { routesConfig } from "./configs";
-import { useAuth } from "./hooks";
+import { useAuth } from "./stores";
 import { useEffect } from "react";
 import { authServices } from "./services";
 import { 

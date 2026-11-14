@@ -1,6 +1,6 @@
 import styles from "./Logout.module.css";
 import { authServices } from "../../services";
-import { useAuth } from "../../hooks";
+import { useAuth } from "../../stores";
 import Button from "../button/Button";
 import { useNavigate } from "react-router-dom";
 import { routesConfig } from "../../configs";
