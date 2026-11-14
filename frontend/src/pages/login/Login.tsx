@@ -1,7 +1,7 @@
 import styles from "./Login.module.css";
 import { GoogleLogin } from '@react-oauth/google';
 import { authServices } from "../../services";
-import { useAuth } from "../../hooks";
+import { useAuth } from "../../stores";
 import { useNavigate } from "react-router-dom";
 import { 
   routesConfig,

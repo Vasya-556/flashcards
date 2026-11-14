@@ -1,7 +1,7 @@
 import styles from "./Home.module.css";
 import { useNavigate } from "react-router-dom";
 import { routesConfig } from "../../configs";
-import { useAuth } from "../../hooks";
+import { useAuth } from "../../stores";
 import DeckList from "../../components/deckList/DeckList";
 import Button from "../../components/button/Button";
 
