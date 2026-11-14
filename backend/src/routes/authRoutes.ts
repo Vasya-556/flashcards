@@ -6,6 +6,7 @@ const router = Router();
 router.post("/login", authControllers.login);
 router.post("/logout", authControllers.logout);
 router.get("/me", authControllers.me);
+router.get("/csrf", authControllers.getCsrfToken);
 
 export {
     router
