@@ -8,13 +8,13 @@ const baseUrl = "/auth"
 const login = async (credentials: Record<string, unknown>): Promise<authTypes.User> => {
     const response = await fetchAPI({
         url: `${baseUrl}/login`,
-        method: "post",
+        method: "POST",
         body: credentials
     });
 
     const csrfResponse = await fetchAPI({
         url: `${baseUrl}/csrf`,
-        method: "get",
+        method: "GET",
     })
 
     if (typeof csrfResponse.csrfToken !== "string"){
@@ -29,7 +29,7 @@ const login = async (credentials: Record<string, unknown>): Promise<authTypes.Us
 const logout = (): Promise<unknown> => {
     const response = fetchAPI({
         url: `${baseUrl}/logout`,
-        method: "post",
+        method: "POST",
     })
 
     useAuth.getState().removeCsrfToken();
@@ -40,7 +40,7 @@ const logout = (): Promise<unknown> => {
 const me = (): Promise<authTypes.User> => {
     return fetchAPI({
         url: `${baseUrl}/me`,
-        method: "get",
+        method: "GET",
     })
 }
 

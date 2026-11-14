@@ -4,15 +4,14 @@ import { useAuth } from "../stores";
 
 type args = {
     url: string,
-    method: "post" | "get" | "put" | "PATCH" | "delete";
+    method: "POST" | "GET" | "PUT" | "PATCH" | "DELETE";
     body?: Record<string, unknown> | FormData;
 }
 
 const fetchAPI = async (args: args) => {
-
     let csrfToken = useAuth.getState().csrfToken;
 
-    if (args.method !== "get" && !csrfToken) {
+    if (args.method !== "GET" && !csrfToken) {
         try {
             const csrfResponse = await fetch(`${appConfig.backendURL}/auth/csrf`, {
                 method: "get",
@@ -45,7 +44,7 @@ const fetchAPI = async (args: args) => {
                     ? {}
                     : {"Content-Type": "application/json"}
                 ),
-                ...(args.method !== "get" && csrfToken
+                ...(args.method !== "GET" && csrfToken
                     ? {"X-CSRF-TOKEN": csrfToken}
                     : {}
                 ),

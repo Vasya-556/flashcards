@@ -5,21 +5,21 @@ const baseUrl = "/deck";
 const getDeck = (deckId: string) => {
     return fetchAPI({
         url: `${baseUrl}/${deckId}`,
-        method: "get"
+        method: "GET"
     });
 };
 
 const getDecks = () => {
     return fetchAPI({
         url: `${baseUrl}`,
-        method: "get"
+        method: "GET"
     });
 };
 
 const createDeck = (name: string) => {
     return fetchAPI({
         url: `${baseUrl}`,
-        method: "post",
+        method: "POST",
         body: { name: name },
     });
 };
@@ -35,7 +35,7 @@ const updateDeck = (deckId: string, name: string) => {
 const deleteDeck = (deckId: string) => {
     return fetchAPI({
         url: `${baseUrl}/${deckId}`,
-        method: "delete",
+        method: "DELETE",
     });
 };
 

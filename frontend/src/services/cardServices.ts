@@ -6,21 +6,21 @@ const baseUrl = "/card";
 const getCard = (deckId: string, cardId: string) => {
     return fetchAPI({
         url: `${baseUrl}/${deckId}/${cardId}`,
-        method: "get",
+        method: "GET",
     });
 };
 
 const getCards = (deckId: string) => {
     return fetchAPI({
         url: `${baseUrl}/${deckId}`,
-        method: "get",
+        method: "GET",
     });
 };
 
 const createCard = (deckId: string, card: cardTypes.CardInput) => {
     return fetchAPI({
         url: `${baseUrl}/${deckId}`,
-        method: "post",
+        method: "POST",
         body: card
     });
 };
@@ -50,7 +50,7 @@ const decreaseProgress = (deckId: string, cardId: string) => {
 const deleteCard = (deckId: string, cardId: string) => {
     return fetchAPI({
         url: `${baseUrl}/${deckId}/${cardId}`,
-        method: "delete",
+        method: "DELETE",
     });
 };
 
@@ -60,7 +60,7 @@ const importCards = (deckId: string, data: File) => {
 
     return fetchAPI({
         url: `${baseUrl}/${deckId}/import`,
-        method: "post",
+        method: "POST",
         body: formData,
     })
 }
